@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  div
+    div 1. Please fill in your employ ID and email address.
+    div 2. Click the Start Recording button.
+    div 3. Clearly and slowly read the following sentence.
+    div 4. Click stop recording when finished.
+  h3 I'm going to make him an offer he cannot refuse.
+  div(class="input") 
+    span(style="margin-right : 3px") Full Name
+    input(type="text")
+  div(class = "input")
+    span(style="margin-right : 32px") Email
+    input(type="text")
+  div
+    button(id="record") Start Recording
+    button(id = "stop" disabled) Stop Recording
+    button(id="submit" disabled) Submit
+  div(id="recording" hidden) Recording...
+  script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js")
+  //- script(src= "/javascripts/recorder.js")
+  script(src="/javascripts/main.js")
