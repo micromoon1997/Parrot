@@ -5,6 +5,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
 const authorizeRouter = require('./routes/authorize');
+const callRouter = require('./routes/call');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/email', emailRouter);
 app.use('/authorize', authorizeRouter);
+app.use('/call', callRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
