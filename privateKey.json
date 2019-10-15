@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "zeta-portal-255719",
+  "private_key_id": "f93df53ba18034ba2eadb4040b1ac0ba06b2f6c6",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC1rp73ITIU06JU\nGAIO3zUGoMDXLa92gWNu9Av8+Ip7SL0TDrlYavYq/Cf62vVk2p/LsiqWT0OmeUZR\nYfNiaKWsx4tmPTg+1HZgkcF1dSiz3cykBYiwlB4mOF6DJmRl4jlvsxRcywgZGp/H\n/YjNrTEx25JKYWvz9PH7fXIrW6bgHrs9Zmos6UEm/I5zihLuepvqe3oVrW7CyZrE\nC+zbMxd8S5XgSjlwtehhVR1MB3bVcIsYtwS4FLVtrTPpS7C7/T5JraipzezeR/BE\n8FGVvuF7LpCyq2vhbCctk4Kl2v8ztUSPQx2Wtcd0AYBtR480qbNj9n7cuboOQDVo\npDuXGARbAgMBAAECggEAI95CJwMIOqFfkl+dBGeftdvFxpWP5wL7aPvIZByDZnyB\nS4JkKCcRy4G1uOpCeTNKSfI2Qy+J6RNXRRjj7oE/eCF7DWe3s3vJlR4hhfln3D7F\nOHqZNlc/rocBbb4GIzEq6rj9o6Y3xpEBi3+r4wM2y6OQOZwLLoIkxeRJxnKVOviw\nY+NHoVyrY3m2xjLHwiW/njirAJ+G4NUkXHX2KXnd7BlxZKc1laa1MgN4hkWzS9OL\nuO7Wbn4Isr0UkhQLvyzrs4iXW312oDKzpMLKN+1eJurTI2X7+zGA6amwalJEdlLy\nFma92yflUyAZRd2tpysRAiEcYAJsndQTPqTS5cUDUQKBgQD0sNd1Uiz4s634pkf7\nnprLJGzh0tGFN4oh53ubqKO95jkubaGeYkmOMgtZRW+rdFfjXPCo/bZ2mnegAYu/\ncPnpQISXaBHpHc1uotpoVLk3j5mqoBN3kSA+daHRAFs234QSYKt1EVxgwXLwydDt\nFepa/vnw0wlcLtvgunQJBbfD0QKBgQC+FERBIFYdDprEEB+if1ctvQTipoKbycBQ\nasnSjxuk2jytRTzvmrMXBubddzMzl1UmUHRyg8yeChHydYDtigmn/Ta924iq/TR1\nHopP45xzWt4xzH1axX+oMYG5Ur2v4a7bq8+ZDOM67j4ai9SB1SEu4ThMXbQxWW14\nbeH5Hh1sawKBgQDcjJT3k2UjmdjCWSZintfJKIDXnwzo9WGVI6+fYwaLwPpjZb+a\nId9IwsTF5zc7JDefoILu3xhamOogF6SdnrgzTMr2KYCTTSCAi1svVMZJVS7dw0Eo\nsW+NvLtoxdhxgk/pvKZuc4J/V35BmLavK+S7tj0UmzNBmp7nVUgHZdb4MQKBgAvt\nGZs8fCq2j99dY56+fqnQAk52RBuiPP7OtHsRn5poVwZIIdqmyjXXqQScRgompKES\nyzukKWKBHz8nQD+nOZPgv16KN7kCyhfPIr6AeYCDYw2c1wCrA6d587m9B0nRzzbZ\nQN1Jgbhg2mSwAVVkGgDnALFJ79Ro2AWGX3dR/GahAoGBAL78bT6O05w4RYOopYAe\nQhFSWJWGmJ6Hd3088VOa3ratec+FZa/j3R8pGJ07HsasGlU4yZdYeIh7XQpw2/fn\nmluLbvmrvupYoocIINl99nytUTre68W/S+ZrNA78VihwCcmTECsjjKJMH2PoS/iq\nnKHOcTxQS6wwG7pWtI9crA/w\n-----END PRIVATE KEY-----\n",
+  "client_email": "starting-account-qdnqwhtcu4wv@zeta-portal-255719.iam.gserviceaccount.com",
+  "client_id": "102386577881279926361",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/starting-account-qdnqwhtcu4wv%40zeta-portal-255719.iam.gserviceaccount.com"
+}
