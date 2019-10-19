@@ -66,7 +66,7 @@ function registerVoice(blob) {
         type: "POST",
         data: '{"locale":"en-us"}'
     }).done(function (response) {
-        console.log("successfully create voice profile");
+        console.log("Successfully created voice profile");
         guid = response.identificationProfileId;
         fd.append("voice_sample", blob, "voiceSample");
         // Create voice enrollment
@@ -81,8 +81,24 @@ function registerVoice(blob) {
         // xhr.setRequestHeader("Content-Type", "multipart/form");
         xhr.setRequestHeader("Ocp-Apim-Subscription-Key", key);
         xhr.send(fd);
+        console.log("Successfully enrolled voice profile");
+        // Get operation status 
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState == 4 && xhr.status == 202)
+            {
+                console.log(xhr.responseText); // Another callback here
+                var xhr1 = new XMLHttpRequest();
+                url = xhr.getResponseHeader("Operation-Location");
+                xhr1.open("GET", url);
+                xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
+                xhr1.send()
+                xhr1.onerror = function(){
+                    alert("Get operation status error");
+                }
+            }
+        };
         xhr.onerror = function(){
-            alert("error occured while enrolling");
+            alert("Error occured while enrolling");
         }
     }).fail(function (err) {
         alert("Create profile error");
