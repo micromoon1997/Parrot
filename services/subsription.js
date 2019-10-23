@@ -1,4 +1,4 @@
-const client = require('../helpers/ms-graph-client');
+const client = require('./ms-graph-client');
 const ONE_DAY = 86400000;
 
 async function createSubscription() {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authHelper = require('../helpers/auth');
+const authHelper = require('../services/auth');
 
 
 /* GET home page. */

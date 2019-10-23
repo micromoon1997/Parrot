@@ -9,8 +9,8 @@ const http = require('http');
 const schedule = require('node-schedule');
 
 const app = require('../app');
-const subscribeHelper = require('../helpers/subsription');
-const meetingHelper = require('../helpers/meeting');
+const subscribeHelper = require('../services/subsription');
+const meetingHelper = require('../services/meeting');
 
 /**
  * Get port from environment and store in Express.

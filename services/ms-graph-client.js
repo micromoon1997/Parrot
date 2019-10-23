@@ -1,6 +1,6 @@
 require("isomorphic-fetch");
 const graph = require('@microsoft/microsoft-graph-client');
-const authHelper = require('../helpers/auth');
+const authHelper = require('./auth');
 
 let client;
 

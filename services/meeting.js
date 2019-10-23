@@ -1,5 +1,5 @@
 const fs = require('fs');
-const client = require('../helpers/ms-graph-client');
+const client = require('./ms-graph-client');
 
 function parseNumber(content) {
   const re = new RegExp(/\[meeting phone number:\s*([0-9]*?)\]/, 'i');
@@ -50,6 +50,7 @@ function updateMeeting(meeting) {
     return;
   }
   meetings[index].changeKey = meeting.changeKey;
+  meetings[index].isCancelled = meeting.isCancelled.toString();
   meetings[index].start = meeting.start;
   meetings[index].end = meeting.end;
   meetings[index].location = meeting.location;

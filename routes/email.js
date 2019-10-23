@@ -1,8 +1,8 @@
 const express = require('express');
 const fs = require('fs');
 const router = express.Router();
-const client = require('../helpers/ms-graph-client');
-const meetingHelper = require('../helpers/meeting');
+const client = require('../services/ms-graph-client');
+const meetingHelper = require('../services/meeting');
 
 /* POST /email */
 router.post('/', async function (req, res, next) {
