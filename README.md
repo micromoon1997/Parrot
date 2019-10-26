@@ -1,4 +1,4 @@
-# Luna
+# Parrot
 > a meeting transcription service
 
 ## Setup
