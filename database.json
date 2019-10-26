@@ -1,0 +1,53 @@
+[
+  {
+    "id": "AQMkADAwATM3ZmYAZS0yNjJjLTM4MGQtMDACLTAwCgBGAAAD8qzntYMa0UmNcvdfBhUq0gcADCxh1Fj7O0a5Tk9J4AgFYAAAAgENAAAADCxh1Fj7O0a5Tk9J4AgFYAAAAAFjcCoAAAA=",
+    "changeKey": "DCxh1Fj7O0a5Tk9J4AgFYAAAAWKYdg==",
+    "isCancelled": "true",
+    "start": {
+      "dateTime": "2019-10-16T03:30:00.0000000",
+      "timeZone": "UTC"
+    },
+    "end": {
+      "dateTime": "2019-10-16T04:00:00.0000000",
+      "timeZone": "UTC"
+    },
+    "location": {
+      "displayName": "N/A",
+      "locationType": "default",
+      "uniqueId": "N/A",
+      "uniqueIdType": "private"
+    },
+    "participants": [
+      {
+        "type": "required",
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00Z"
+        },
+        "emailAddress": {
+          "name": "yhy1009511320@gmail.com",
+          "address": "yhy1009511320@gmail.com"
+        }
+      },
+      {
+        "type": "required",
+        "status": {
+          "response": "none",
+          "time": "0001-01-01T00:00:00Z"
+        },
+        "emailAddress": {
+          "name": "wavesbot319@outlook.com",
+          "address": "wavesbot319@outlook.com"
+        }
+      }
+    ],
+    "meetingManager": {
+      "emailAddress": {
+        "name": "yhy1009511320@gmail.com",
+        "address": "yhy1009511320@gmail.com"
+      }
+    },
+    "phoneNumber": "7780000000",
+    "code": "0000"
+  }
+]
