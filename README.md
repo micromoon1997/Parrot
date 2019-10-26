@@ -18,7 +18,7 @@ npm install
         - Set a **Name**.
         - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
         - Under **Redirect URI**, set the first drop-down to Web and set the value to `[Your server address]/authorize`(You can use `http://localhost:3000/authorize` for local testing). Also, save this redirect URI to **OUTLOOK_REDIRECT_URI** in `.env`.
-    4. Choose **Register**. On the **Node.js Outlook Tutorial** page, copy **Application (client) ID** and paste it to **OUTLOOK_CLIENT_ID** in the `.env` File.
+    4. Choose **Register**. On your application page, copy **Application (client) ID** and paste it to **OUTLOOK_CLIENT_ID** in the `.env` File.
     5. Select **Authentication** under **Manage**. Locate the **Implicit grant** section and enable **ID tokens**. Choose **Save**.
     6. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and choose **Add**.
     7. Copy the client secret value and save it to **OUTLOOK_CLIENT_SECRETE** in `.env`.

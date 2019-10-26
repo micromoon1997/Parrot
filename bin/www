@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 require('dotenv').config();
-const debug = require('debug')('node-tutorial:server');
+const debug = require('debug')('parrot:server');
 const http = require('http');
 const serverService = require('../services/server');
 const app = require('../app');
