@@ -8,7 +8,7 @@ let callSid;
 let recordingSid;
 
 /* GET /call */
-router.get('/call/:toPhoneNumber', async (req, res, next) => {
+router.get('/:toPhoneNumber', async (req, res, next) => {
     const {toPhoneNumber} = req.params;
     console.log(`To Phone Number: ${toPhoneNumber}`);
 
