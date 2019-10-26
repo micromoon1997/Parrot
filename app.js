@@ -2,16 +2,19 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
 const authorizeRouter = require('./routes/authorize');
 const callRouter = require('./routes/call');
+const usersRouter = require('./routes/users');
+const enrollRouter = require('./routes/enroll');
 
 const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -22,6 +25,8 @@ app.use('/', indexRouter);
 app.use('/email', emailRouter);
 app.use('/authorize', authorizeRouter);
 app.use('/call', callRouter);
+app.use('/users', usersRouter);
+app.use('/enroll', enrollRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -87,7 +87,7 @@ function checklength(timeDurationArr){
     var sum = 0;
     timeDurationArr.forEach((duration)=>{
         sum += duration[1]-duration[0];
-    })
+    });
 
     return (sum>=minLength);
 }

@@ -18,7 +18,7 @@ var guid;
 function startRecording() {
     console.log("record button clicked");
     var options = { audio: true };
-    recordButton.disabled = true
+    recordButton.disabled = true;
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
@@ -91,7 +91,7 @@ function registerVoice(blob) {
                 url = xhr.getResponseHeader("Operation-Location");
                 xhr1.open("GET", url);
                 xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-                xhr1.send()
+                xhr1.send();
                 xhr1.onerror = function(){
                     alert("Get operation status error");
                 }
