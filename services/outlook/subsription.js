@@ -1,4 +1,4 @@
-const client = require('./ms-graph-client');
+const { getClient } = require('./ms-graph-client');
 const ONE_DAY = 86400000;
 
 async function createSubscription() {
@@ -9,6 +9,7 @@ async function createSubscription() {
     expirationDateTime: new Date((new Date()).getTime() + ONE_DAY * 2)
   };
   try {
+    const client = getClient();
     const result = await client
       .api('/subscriptions')
       .post(subscription);
@@ -20,6 +21,7 @@ async function createSubscription() {
 
 async function listSubscription() {
   try {
+    const client = getClient();
     const result = await client
       .api('/subscriptions')
       .get();
@@ -31,6 +33,7 @@ async function listSubscription() {
 
 async function deleteAllSubscriptions() {
   try {
+    const client = getClient();
     const result = await client
       .api('/subscriptions')
       .get();
@@ -49,6 +52,7 @@ async function renewSubscription(id) {
     expirationDateTime: new Date((new Date()).getTime() + ONE_DAY * 2)
   };
   try {
+    const client = getClient();
     await client
       .api(`/subscriptions/${id}`)
       .update(subscription);
@@ -60,6 +64,7 @@ async function renewSubscription(id) {
 
 async function checkSubscription() {
   try {
+    const client = getClient();
     const result = await client
       .api('/subscriptions')
       .get();

@@ -1,8 +1,7 @@
 const express = require('express');
-const fs = require('fs');
 const router = express.Router();
-const client = require('../services/ms-graph-client');
-const meetingHelper = require('../services/meeting');
+const { getClient } = require('../services/outlook/ms-graph-client');
+const meetingHelper = require('../services/outlook/meeting');
 
 /* POST /email */
 router.post('/', async function (req, res, next) {
@@ -15,6 +14,7 @@ router.post('/', async function (req, res, next) {
   } else {
     for (const notification of req.body.value) {
       const meetingId = notification.resourceData.id;
+      const client = getClient();
       const result = await client
         .api(`/me/events/${meetingId}`)
         .get();

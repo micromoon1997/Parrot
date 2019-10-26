@@ -3,14 +3,11 @@
 /**
  * Module dependencies.
  */
-
+require('dotenv').config();
 const debug = require('debug')('node-tutorial:server');
 const http = require('http');
-const schedule = require('node-schedule');
-
+const serverService = require('../services/server');
 const app = require('../app');
-const subscribeHelper = require('../services/subsription');
-const meetingHelper = require('../services/meeting');
 
 /**
  * Get port from environment and store in Express.
@@ -91,11 +88,8 @@ async function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-  await subscribeHelper.deleteAllSubscriptions();
-  await subscribeHelper.checkSubscription();
-  schedule.scheduleJob('0 */1 * * *', () => {
-    subscribeHelper.checkSubscription();
-  });
-  await meetingHelper.checkUpcomingMeetings();
-  console.log(`Server started. Listening on port: ${port}`)
+  if (await serverService.checkRefreshToken()) {
+    await serverService.checkServerStatus();
+  }
+  console.log(`Server started. Listening on port: ${port}`);
 }

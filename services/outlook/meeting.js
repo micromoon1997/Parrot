@@ -1,5 +1,5 @@
 const fs = require('fs');
-const client = require('./ms-graph-client');
+const { getClient } = require('./ms-graph-client');
 
 function parseNumber(content) {
   const re = new RegExp(/\[meeting phone number:\s*([0-9]*?)\]/, 'i');
@@ -19,6 +19,7 @@ function parseCode(content) {
 
 async function checkUpcomingMeetings() {
   try {
+    const client = getClient();
     const result = await client
       .api('/me/events')
       .filter(`start/dateTime ge '${(new Date()).toISOString()}'`)

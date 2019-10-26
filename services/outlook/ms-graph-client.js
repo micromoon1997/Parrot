@@ -1,11 +1,11 @@
 require("isomorphic-fetch");
 const graph = require('@microsoft/microsoft-graph-client');
-const authHelper = require('./auth');
+const authService = require('./auth');
 
 let client;
 
 function initClient() {
-  const accessToken = authHelper.getAccessToken();
+  const accessToken = authService.getAccessToken();
   return graph.Client.init({
     authProvider: (done) => {
       done(null, accessToken);
@@ -20,4 +20,6 @@ function getClient() {
   return client;
 }
 
-module.exports = getClient();
+module.exports = {
+  getClient: getClient
+};

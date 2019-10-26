@@ -2,9 +2,9 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-require('dotenv').config();
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
+const authorizeRouter = require('./routes/authorize');
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/email', emailRouter);
+app.use('/authorize', authorizeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

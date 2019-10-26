@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authHelper = require('../services/auth');
+const authHelper = require('../services/outlook/auth');
 
 
 /* GET home page. */
