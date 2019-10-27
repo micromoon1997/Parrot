@@ -64,3 +64,4 @@ private-key.json
 .DS_Store
 .idea/
 database.json
+*.wav
