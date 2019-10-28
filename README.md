@@ -34,7 +34,7 @@ npm install
 
 3. Once project is created, navigate to the project dashboard where there is a card that show the Account Sid and Auth Token required by this project to call Twilio API.
 
-4. If not created yet, make a new file called .env in the root of the project. Add the twilio Account Sid and Auth Token in that file as shown below:
+4. If not created yet, make a new file called .env in the root of the project. Add the Twilio Account Sid and Auth Token in that file as shown below:
 
 ```
 TWILLIO_ACCOUNT_SID={YOUR_ACCOUNT_SID}
