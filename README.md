@@ -43,13 +43,12 @@ TWILLIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
 
 ### Setup keys for Google Speaker Diarization
 1. Register for Google cloud using your Google account.
-  1. In the GCP Console, go to the **Create service account key** page.
-  2. From the **Service account** list, select **New service account**.
-  3. In the **Service account name** field, enter a name.
-  4. From the **Role** list, select **Project > Owner**.
-
-    *Note: The Role field authorizes your service account to access resources. You can view and change this field later by using the GCP Console. If you are developing a production app, specify more granular permissions than Project > Owner. For more information, see granting roles to service accounts.*
-  5. Click Create. A JSON file that contains your key downloads to your computer.
+    1. In the GCP Console, go to the **Create service account key** page.
+    2. From the **Service account** list, select **New service account**.
+    3. In the **Service account name** field, enter a name.
+    4. From the **Role** list, select **Project > Owner**.
+        > Note: The Role field authorizes your service account to access resources. You can view and change this field later by using the GCP Console. If you are developing a production app, specify more granular permissions than Project > Owner. For more information, see granting roles to service accounts.*
+    5. Click Create. A JSON file that contains your key downloads to your computer.
 
 2. In order to use Google Could API. Follow steps on [Getting Started with Authentication](https://cloud.google.com/docs/authentication/getting-started?refresh=1&pli=1).
 
