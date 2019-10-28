@@ -66,5 +66,10 @@ TWILLIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
     set GOOGLE_APPLICATION_CREDENTIALS=[PATH]
     ```
 
+## Run
+```shell script
+npm start
+```
+
 ## References
 [Register a Microsoft Graph API app](https://docs.microsoft.com/en-us/outlook/rest/node-tutorial#register-the-app)
