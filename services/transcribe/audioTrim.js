@@ -1,5 +1,4 @@
 const ffmpeg = require('fluent-ffmpeg');
-const ffprobe = require('ffprobe');
 
 
 const fileName = '../../test2.wav';
