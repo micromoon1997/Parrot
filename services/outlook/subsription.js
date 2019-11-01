@@ -13,7 +13,7 @@ async function createSubscription() {
     const result = await client
       .api('/subscriptions')
       .post(subscription);
-    console.log(`Subscription created. Id: ${result.id}`);
+    console.log(`Microsoft Graph API Subscription created. Id: ${result.id}`);
   } catch (err) {
     console.log(err);
   }
