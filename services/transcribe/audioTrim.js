@@ -28,18 +28,23 @@ const mergeDuration = function(value){
 };
 
 const getSpeakersSample = function (value, key, map){
-    let speakAudio = ffmpeg(fileName);
+    let speakerAudio = ffmpeg({ option: "timeout: 00"});
     for (let i = 0; i<value.length; i++) {
         //console.log(value[i][0]);
-        speakAudio
+        let clipAudio = ffmpeg(fileName)
         .setStartTime(value[i][0])
         .setDuration(value[i][1] - value[i][0])
         .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
             })
+        .output('./output/tempdir/' + key+i + '.wav')
+        .run;
+
+        speakerAudio
+        .input('./output/tempdir/' + key+i + '.wav');
     }
 
-    speakAudio.mergeToFile('./output/speaker' + key + '.wav')
+    speakerAudio.mergeToFile('./output/speaker' + key + '.wav')
         .on('error', function (err) {
             console.log('An error occurred: ' + err.message);
         })
@@ -53,21 +58,3 @@ module.exports ={
     mergeDuration:mergeDuration,
     getSpeakersSample:getSpeakersSample
 };
-
-function test(){
-    let testAudio = ffmpeg(fileName);
-    testAudio
-        .input(fileName)
-        .setStartTime(0.6)
-        .setDuration(3.1-0.6)
-        .input(fileName)
-        .setStartTime(8)
-        .setDuration(17.3-8)
-        .mergeToFile('./output/testoutput.wav', './output/tempdir');
-    let testAudio2 = ffmpeg(fileName);
-    testAudio2
-        .setStartTime(8)
-        .setDuration(17.3-8)
-        .mergeToFile('./output/testoutput2.wav');
-};
-test();
