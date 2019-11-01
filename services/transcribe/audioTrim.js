@@ -1,7 +1,7 @@
 const ffmpeg = require('fluent-ffmpeg');
 
 
-const fileName = '../../test2.wav';
+const fileName = './testAudio/test2.wav';
 const minLength = 10;
 
 //this function checks a partipant 's audio length is long enough,
@@ -30,7 +30,7 @@ const mergeDuration = function(value){
 const getSpeakersSample = function (value, key, map){
     let speakAudio = ffmpeg(fileName);
     for (let i = 0; i<value.length; i++) {
-        console.log(value[i][1] - value[i][0]);
+        //console.log(value[i][0]);
         speakAudio
         .setStartTime(value[i][0])
         .setDuration(value[i][1] - value[i][0])
@@ -53,3 +53,21 @@ module.exports ={
     mergeDuration:mergeDuration,
     getSpeakersSample:getSpeakersSample
 };
+
+function test(){
+    let testAudio = ffmpeg(fileName);
+    testAudio
+        .input(fileName)
+        .setStartTime(0.6)
+        .setDuration(3.1-0.6)
+        .input(fileName)
+        .setStartTime(8)
+        .setDuration(17.3-8)
+        .mergeToFile('./output/testoutput.wav', './output/tempdir');
+    let testAudio2 = ffmpeg(fileName);
+    testAudio2
+        .setStartTime(8)
+        .setDuration(17.3-8)
+        .mergeToFile('./output/testoutput2.wav');
+};
+test();

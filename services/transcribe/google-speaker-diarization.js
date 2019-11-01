@@ -12,7 +12,7 @@ const client = new speech.SpeechClient();
 // this is the min length of an audio ppl speaking
 
 
-const fileName = '../../test2.wav';
+const fileName = './testAudio/test2.wav';
 const speakerCount = 3;
 const speakersAudio = new Map();
 const config = {
@@ -77,6 +77,7 @@ const getResponse = async () => {
 
     });
     speakersAudio.forEach(aT.mergeDuration);
+    console.log(speakersAudio);
     speakersAudio.forEach(aT.getSpeakersSample);
     //console.log('speakersAudio');
     return sentence;
