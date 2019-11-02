@@ -2,11 +2,15 @@ extends layout
 
 block content
   div
-    div 1. Please fill in your employ ID and email address.
-    div 2. Click the Start Recording button.
-    div 3. Clearly and slowly read the following sentence.
-    div 4. Click stop recording when finished.
+    div 1. Please fill in your full name and email address.
+    div 2. Click Create Profile Button
+    div 3. Click the Start Recording button.
+    div 4. Clearly and slowly read the following text.
+    div 5. Click stop recording when finished.
+    div 6. If enrollment status says more audio requried, repeate steps 3-5 until enrollment successful.
+    div 7. Click submit button
   h3 I'm going to make him an offer he cannot refuse.
+  h3 A lazy dog jumped over the brown fox.
   div(class="input") 
     span(style="margin-right : 3px") Full Name
     input(type="text")
@@ -14,10 +18,14 @@ block content
     span(style="margin-right : 32px") Email
     input(type="text")
   div
+    button(id="create_profile" disabled) Create Profile 
     button(id="record") Start Recording
     button(id = "stop" disabled) Stop Recording
     button(id="submit" disabled) Submit
   div(id="recording" hidden) Recording...
+
+  h4(id = "success" hidden) Enrollment successful!
+  h4(id = "more_audio" hidden) More audio needed, repeat step 3-5
+
   script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js")
-  //- script(src= "/javascripts/recorder.js")
   script(src="/javascripts/main.js")
