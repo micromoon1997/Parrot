@@ -9,7 +9,7 @@ const wordsPause = 0.4;
 
 //this function checks a participant 's audio length is long enough,
 //eg. [[startTime1, endTime1], [startTime2, endTime2]]
-const checkAudioLength = function (timeDurationArr) {
+function checkAudioLength (timeDurationArr) {
     let sum = 0;
     timeDurationArr.forEach((duration) => {
         sum += duration[1] - duration[0];
@@ -19,7 +19,7 @@ const checkAudioLength = function (timeDurationArr) {
 };
 
 // function to merge two time duration if they r continue
-const mergeDuration = function (value) {
+function mergeDuration (value) {
     for (let i = 0; i < value.length - 1; i++) {
         if (value[i][1] === value[i + 1][0] || (value[i][1] < value[i + 1][0] && value[i][1] > value[i + 1][0]-wordsPause)) {
             value[i][1] = value[i + 1][1];
@@ -30,7 +30,7 @@ const mergeDuration = function (value) {
 
 };
 
-const getSpeakersClips = function (value, key, map) {
+function getSpeakersClips (value, key, map) {
     for (let i = 0; i < value.length; i++) {
         //console.log(value[i][0]);
         let clipAudio = ffmpeg(fileName)
@@ -43,7 +43,7 @@ const getSpeakersClips = function (value, key, map) {
     }
 };
 
-const getSpeakersSample = function (value, key, map) {
+function getSpeakersSample (value, key, map) {
     let speakerAudio = ffmpeg();
     for (let i = 0; i < value.length; i++) {
         speakerAudio

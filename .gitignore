@@ -62,7 +62,7 @@ private-key.json
 .next
 
 # transcribe output folder
-services/transcribe/output/
+##services/transcribe/output/
 
 .DS_Store
 .idea/
