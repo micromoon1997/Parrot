@@ -107,15 +107,17 @@ Current subscriptions:
 Server started. Listening on port: 3000
 
 ```
+#### Enroll voice samples
+TODO
 
-#### Receive Email
+#### Receive meeting invitation
 Start the server, send a meeting invitation to `wavesbot319@outlook.com`. Wait for a couple of seconds. 
 There should be some post requests appearing in the console, and the new meeting should be added to `database.json`.
 
-#### Transcription
+#### Transcribe
 TODO
 
-#### Twillio
+#### Make the phone call
 TODO
 
 ## References
