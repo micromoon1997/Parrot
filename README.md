@@ -64,6 +64,18 @@ TWILLIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
     ```
     set GOOGLE_APPLICATION_CREDENTIALS=[PATH]
     ```
+ 
+### Setup for ffmpeg and ffprobe
+1. make sure you have ffmpeg installed on your system (including all necessary encoding libraries like libmp3lame or libx264), you can find the installation step [here](https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#prerequisites).
+	
+	1. For MacOS user, it is recommended to use ```brew install ffmpeg```.
+	2. For Windows user, once download and installation are finished, make sure to declare the installation path in the ```services/transcribe/audioTrim.js```. The following code are recommended: 
+	
+		```
+		ffmpeg.setFfmpegPath("[Your installation path]\\ffmpeg.exe");
+		ffmpeg.setFfprobePath("[Your installation path]\\ffprobe.exe");
+
+		```
 
 ## Run
 ```shell script
