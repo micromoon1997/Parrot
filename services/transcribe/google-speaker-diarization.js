@@ -1,7 +1,7 @@
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = '../../private-key.json';
 
 const fs = require('fs');
-const aT = require('./audioTrim');
+const audioTrim = require('./audioTrim');
 
 // Imports the Google Cloud client library
 const speech = require('@google-cloud/speech').v1p1beta1;
@@ -52,23 +52,19 @@ const getResponse = async () => {
     let prevTag = 0;
     let sentence = "Meeting Minutes\n";
     wordsInfo.forEach((a) => {
-        let timeduration = [parseInt(a.startTime.seconds)+(a.startTime.nanos)/1000000000, parseInt(a.endTime.seconds)+(a.endTime.nanos)/1000000000];
+        let timeduration = [parseInt(a.startTime.seconds) + (a.startTime.nanos) / 1000000000, parseInt(a.endTime.seconds) + (a.endTime.nanos) / 1000000000];
         if (a.speakerTag !== prevTag) {
             sentence += `\nSpeaker ${a.speakerTag}: ${a.word}`;
-
-
         } else {
             sentence += ` ${a.word}`;
         }
         prevTag = a.speakerTag;
 
-
         if (speakersAudio.length !== speakerCount || !speakersAudio.get(a.speakerTag)
-            || !aT.checkAudioLength(speakersAudio.get(a.speakerTag))){
+            || !audioTrim.checkAudioLength(speakersAudio.get(a.speakerTag))) {
             if (!speakersAudio.get(a.speakerTag)) {
                 speakersAudio.set(a.speakerTag, [timeduration]);
-            }
-            else {
+            } else {
                 var currArrDuration = speakersAudio.get(a.speakerTag);
                 currArrDuration.push(timeduration);
                 speakersAudio.set(a.speakerTag, currArrDuration);
@@ -76,11 +72,16 @@ const getResponse = async () => {
         }
 
     });
-    speakersAudio.forEach(aT.mergeDuration);
+    speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
-    speakersAudio.forEach(aT.getSpeakersClips);
-    speakersAudio.forEach(aT.getSpeakersSample);
-    //console.log('speakersAudio');
+
+    for (let [key, value] of speakersAudio) {
+        await audioTrim.getSpeakersClips(value, key);
+    }
+
+    for (let [key, value] of speakersAudio) {
+        await audioTrim.getSpeakersSample(value, key);
+    }
     return sentence;
 };
 
