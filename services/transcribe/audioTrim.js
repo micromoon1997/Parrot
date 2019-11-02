@@ -39,16 +39,12 @@ const getSpeakersClips = function (value, key, map) {
                 console.log('An error occurred: ' + err.message);
             })
             .save('./output/tempdir/' + key + i + '.wav');
-
-        speakerAudio
-            .input('./output/tempdir/' + key + i + '.wav');
     }
 };
 
 const getSpeakersSample = function (value, key, map) {
     let speakerAudio = ffmpeg();
     for (let i = 0; i < value.length; i++) {
-
         speakerAudio
             .input('./output/tempdir/' + key + i + '.wav');
     }
