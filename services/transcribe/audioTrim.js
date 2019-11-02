@@ -37,8 +37,7 @@ const getSpeakersSample = function (value, key, map){
         .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
             })
-        .output('./output/tempdir/' + key+i + '.wav')
-        .run;
+        .save('./output/tempdir/' + key+i + '.wav');
 
         speakerAudio
         .input('./output/tempdir/' + key+i + '.wav');
