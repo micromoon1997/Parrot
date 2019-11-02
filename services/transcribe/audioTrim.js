@@ -1,4 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg');
+//ffmpeg.setFfmpegPath("C:\\Users\\MSI\\Downloads\\ffmpeg-20191028-68f623d-win64-static\\ffmpeg-20191028-68f623d-win64-static\\bin\\ffmpeg.exe");
+//ffmpeg.setFfprobePath("C:\\Users\\MSI\\Downloads\\ffmpeg-20191028-68f623d-win64-static\\ffmpeg-20191028-68f623d-win64-static\\bin\\ffprobe.exe");
 
 
 const fileName = './testAudio/test2.wav';
