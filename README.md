@@ -70,5 +70,41 @@ TWILLIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
 npm start
 ```
 
+## Test(temporary)
+Before you start the server, make sure you have the `.env` file and `private-key.json` in your root directory.
+
+If you are testing on local server, make sure you have the ngrok service running and have replaced the `SERVER_ADDRESS` in `.env`
+with your ngrok address.
+
+When you successfully start the server, there should be similar messages displaying in the console:
+```shell script
+Subscription created. Id: 63584ac1-a951-4c95-bde4-031d26e235a9
+Current subscriptions:
+[
+  {
+    "id": "63584ac1-a951-4c95-bde4-031d26e235a9",
+    "resource": "me/events",
+    "applicationId": "220cf0fd-9bf3-47fb-b86d-7976d3ffafd4",
+    "changeType": "created,updated",
+    "clientState": null,
+    "notificationUrl": "https://5c2f6242.ngrok.io/email",
+    "expirationDateTime": "2019-11-04T18:51:26.511Z",
+    "creatorId": "00037FFE262C380D"
+  }
+]
+Server started. Listening on port: 3000
+
+```
+
+#### Receive Email
+Start the server, send a meeting invitation to `wavesbot319@outlook.com`. Wait for a couple of seconds. 
+There should be some post requests appearing in the console, and the new meeting should be added to `database.json`.
+
+#### Transcription
+TODO
+
+#### Twillio
+TODO
+
 ## References
 [Register a Microsoft Graph API app](https://docs.microsoft.com/en-us/outlook/rest/node-tutorial#register-the-app)
