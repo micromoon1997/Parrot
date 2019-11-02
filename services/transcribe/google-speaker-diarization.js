@@ -78,6 +78,7 @@ const getResponse = async () => {
     });
     speakersAudio.forEach(aT.mergeDuration);
     console.log(speakersAudio);
+    speakersAudio.forEach(aT.getSpeakersClips);
     speakersAudio.forEach(aT.getSpeakersSample);
     //console.log('speakersAudio');
     return sentence;

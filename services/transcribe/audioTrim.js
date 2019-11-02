@@ -29,8 +29,7 @@ const mergeDuration = function (value) {
 
 };
 
-const getSpeakersSample = function (value, key, map) {
-    let speakerAudio = ffmpeg({option: "timeout: 00"});
+const getSpeakersClips = function (value, key, map) {
     for (let i = 0; i < value.length; i++) {
         //console.log(value[i][0]);
         let clipAudio = ffmpeg(fileName)
@@ -40,6 +39,15 @@ const getSpeakersSample = function (value, key, map) {
                 console.log('An error occurred: ' + err.message);
             })
             .save('./output/tempdir/' + key + i + '.wav');
+
+        speakerAudio
+            .input('./output/tempdir/' + key + i + '.wav');
+    }
+};
+
+const getSpeakersSample = function (value, key, map) {
+    let speakerAudio = ffmpeg();
+    for (let i = 0; i < value.length; i++) {
 
         speakerAudio
             .input('./output/tempdir/' + key + i + '.wav');
@@ -57,5 +65,6 @@ const getSpeakersSample = function (value, key, map) {
 module.exports = {
     checkAudioLength: checkAudioLength,
     mergeDuration: mergeDuration,
+    getSpeakersClips: getSpeakersClips,
     getSpeakersSample: getSpeakersSample
 };
