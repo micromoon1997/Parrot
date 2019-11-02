@@ -61,6 +61,9 @@ private-key.json
 # next.js build output
 .next
 
+# transcribe output folder
+services/transcribe/output/
+
 .DS_Store
 .idea/
 database.json

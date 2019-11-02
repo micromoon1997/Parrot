@@ -52,7 +52,7 @@ const getResponse = async () => {
     let prevTag = 0;
     let sentence = "Meeting Minutes\n";
     wordsInfo.forEach((a) => {
-        var timeduration = [parseInt(a.startTime.seconds)+(a.startTime.nanos)/1000000000, parseInt(a.endTime.seconds)+(a.endTime.nanos)/1000000000];
+        let timeduration = [parseInt(a.startTime.seconds)+(a.startTime.nanos)/1000000000, parseInt(a.endTime.seconds)+(a.endTime.nanos)/1000000000];
         if (a.speakerTag !== prevTag) {
             sentence += `\nSpeaker ${a.speakerTag}: ${a.word}`;
 
