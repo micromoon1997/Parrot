@@ -23,24 +23,45 @@ function createProfile() {
     }
 }
 
-function createEnrollment(blob) {
-    // let fd = new FormData();
-    // fd.append("voice_sample", blob.buffer);
-
+function createEnrollment(blob, res) {
     let xhr = new XMLHttpRequest();
-    console.log(blob.buffer);
+    console.log(blob);
     xhr.open("POST", MS_API_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
-    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-    xhr.send();
-
-    xhr.onload = function (e) {
-        if(this.readyState === 4 && xhr.status === 202) {
-            operationUrl = xhr.getRequestHeader("Operation-Location");
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+        if(xhr.status === 202){
+            operationUrl = xhr.getResponseHeader("Operation-Location");
             console.log(operationUrl);
-        } else if (this.readyState === 4 ){
-            console.log("failed enrollment");
+            setTimeout(function() {
+                //status check api call
+                let xhrStatusCheck = new XMLHttpRequest();
+                xhrStatusCheck.open("GET", operationUrl);
+                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
+                xhrStatusCheck.send();
+                xhrStatusCheck.onload = function(){
+                    if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200){
+                        res.end(xhrStatusCheck.responseText);
+                        console.log(res);
+                        // let responseText = JSON.parse(xhrStatusCheck.responseText);
+                        
+                        // responseText.processingResult.enrollmentStatus;
+                        // responseText.processingResult.remainingEnrollmentSpeechTime;
+
+                        // console.log(xhrStatusCheck.responseText);
+                        
+                    } else {
+                        console.log(xhrStatusCheck.statusText);
+                    }
+                }
+            }, 5000);
+        }
+        else{
+            console.log(xhr.status);
+            console.log(xhr.responseText);
         }
     }
+    xhr.send(blob.buffer);
 }
 
 module.exports = {

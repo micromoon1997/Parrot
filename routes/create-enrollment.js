@@ -3,13 +3,13 @@ const router = express.Router();
 const registration = require('../services/ms-speaker-registration.js');
 const multer = require('multer');
 let upload = multer();
-// let type = ;
-// console.log(type);
+let type = upload.single('voice_sample');
 
-router.post('/', upload.single('voice_sample'), function(req, res, next) {
-    console.log("here");
-    console.log(req.file);
-    registration.createEnrollment(req.file);
+router.post('/', type, function(req, res, next) {
+    registration.createEnrollment(req.file, res);
+    // console.log(res);
+    
+    res.setHeader("Content-type", 'application/json');
     res.sendStatus(200);
 });
 

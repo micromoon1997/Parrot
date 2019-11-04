@@ -4,7 +4,7 @@ var audioContext = window.AudioContext || window.webkitAudioContext;
 var gumStream;
 var rec;
 var input;
-const SERVER_ADDRESS = "https://87ce6147.ngrok.io";
+const SERVER_ADDRESS = "https://d271538a.ngrok.io";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
@@ -79,13 +79,13 @@ function registerVoice(blob) {
     fd.append("voice_sample", blob, "voiceSample");
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
-        if (this.readyState == 4){
-            console.log("Server returned: ", e.target.statusText);
+        if (this.readyState === 4 && xhr.status === 200){
+            console.log("Server returned: ", xhr.responseText);
             recordButton.disabled = false;
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');
-    xhr.setRequestHeader("Content-Type", "multipart/form-data");
+    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
     // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
     // console.log("Successfully enrolled voice profile");
