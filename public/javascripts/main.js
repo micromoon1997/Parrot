@@ -4,12 +4,17 @@ var audioContext = window.AudioContext || window.webkitAudioContext;
 var gumStream;
 var rec;
 var input;
-var key = "b1df4f201b78443fb7cd7e6345226f26";
+const SERVER_ADDRESS = "https://87ce6147.ngrok.io";
+
+let createButton = document.getElementById("create_profile");
+createButton.addEventListener("click", createProfile);
 
 var recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
 var stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
+
+
 var submitButton = document.getElementById('submit');
 submitButton.addEventListener("click", submit);
 var recording = document.getElementById("recording");
@@ -44,63 +49,65 @@ function stopRecording() {
     recordButton.disabled = false;
     rec.stop();
     gumStream.getAudioTracks()[0].stop();
-    submitButton.disabled = false;
+    rec.exportWAV(registerVoice);
 }
 
 function submit() {
     recordButton.disabled = true;
     stopButton.disabled = true;
     submitButton.disabled = true;
-    rec.exportWAV(registerVoice);
+}
+
+function createProfile() {
+    
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", SERVER_ADDRESS+"/create");
+    xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.send();
+
+    xhr.onload = function(e) {
+        if (this.readyState === 4 && xhr.status === 200){
+            console.log("Server returned: ", e.target.statusText);
+            recordButton.disabled = false;
+            createButton.disabled = true;
+        }
+    };
 }
 
 function registerVoice(blob) {
-    var fd = new FormData();
-    $.ajax({
-        // Create voice profile
-        url: "https://cs319speechrecog.cognitiveservices.azure.com/spid/v1.0/identificationProfiles",
-        beforeSend: function (xhrObj) {
-            xhrObj.setRequestHeader("Content-Type", "application/json");
-            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-        },
-        type: "POST",
-        data: '{"locale":"en-us"}'
-    }).done(function (response) {
-        console.log("Successfully created voice profile");
-        guid = response.identificationProfileId;
-        fd.append("voice_sample", blob, "voiceSample");
-        // Create voice enrollment
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function(e) {
-            if (this.readyState == 4){
-                console.log("Server returned: ", e.target.statusText);
-                recordButton.disabled = false;
-            }
-        };
-        xhr.open("POST", "https://cs319speechrecog.cognitiveservices.azure.com/spid/v1.0/identificationProfiles/"+guid+"/enroll", true);
-        // xhr.setRequestHeader("Content-Type", "multipart/form");
-        xhr.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-        xhr.send(fd);
-        console.log("Successfully enrolled voice profile");
-        // Get operation status 
-        xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4 && xhr.status == 202)
-            {
-                console.log(xhr.responseText); // Another callback here
-                var xhr1 = new XMLHttpRequest();
-                url = xhr.getResponseHeader("Operation-Location");
-                xhr1.open("GET", url);
-                xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-                xhr1.send();
-                xhr1.onerror = function(){
-                    alert("Get operation status error");
-                }
-            }
-        };
-        xhr.onerror = function(){
-            alert("Error occured while enrolling");
+    let fd = new FormData();
+    fd.append("voice_sample", blob, "voiceSample");
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function(e) {
+        if (this.readyState == 4){
+            console.log("Server returned: ", e.target.statusText);
+            recordButton.disabled = false;
         }
-    }).fail(function (err) {
-        alert("Create profile error");
-    });
+    };
+    xhr.open("POST", SERVER_ADDRESS + '/register');
+    xhr.setRequestHeader("Content-Type", "multipart/form-data");
+    // xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.send(fd);
+    // console.log("Successfully enrolled voice profile");
+        // Get operation status 
+        // xhr.onreadystatechange = function(){
+        //     if (xhr.readyState == 4 && xhr.status == 202)
+        //     {
+        //         console.log(xhr.responseText); // Another callback here
+        //         var xhr1 = new XMLHttpRequest();
+        //         url = xhr.getResponseHeader("Operation-Location");
+        //         xhr1.open("GET", url);
+        //         xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
+        //         xhr1.send();
+        //         xhr1.onerror = function(){
+        //             alert("Get operation status error");
+        //         }
+        //     }
+        // };
+        // xhr.onerror = function(){
+        //     alert("Error occured while enrolling");
+        // }
+    // }).fail(function (err) {
+    //     alert("Create profile error");
+    // });
 }
