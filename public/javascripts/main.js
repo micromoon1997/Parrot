@@ -1,28 +1,35 @@
 window.navigator = window.navigator || {};
 
-var audioContext = window.AudioContext || window.webkitAudioContext;
-var gumStream;
-var rec;
-var input;
-var key = "b1df4f201b78443fb7cd7e6345226f26";
+let audioContext = window.AudioContext || window.webkitAudioContext;
+let gumStream;
+let rec;
+let input;
 
-var recordButton = document.getElementById("record");
+// everyone should set this to their own ngrok address
+const SERVER_ADDRESS = "https://fd50538f.ngrok.io";
+
+let createButton = document.getElementById("create_profile");
+createButton.addEventListener("click", createProfile);
+let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
-var stopButton = document.getElementById("stop");
+let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
-var submitButton = document.getElementById('submit');
+
+let more_audio = document.getElementById("more_audio");
+let enroll_success = document.getElementById("success");
+
+let submitButton = document.getElementById('submit');
 submitButton.addEventListener("click", submit);
-var recording = document.getElementById("recording");
-var guid;
+let recording = document.getElementById("recording");
 
 function startRecording() {
     console.log("record button clicked");
-    var options = { audio: true };
+    let options = { audio: true };
     recordButton.disabled = true;
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        var ac = new audioContext({sampleRate:16000});
+        let ac = new audioContext({sampleRate:16000});
         gumStream = stream;
         input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
@@ -44,63 +51,56 @@ function stopRecording() {
     recordButton.disabled = false;
     rec.stop();
     gumStream.getAudioTracks()[0].stop();
-    submitButton.disabled = false;
+    rec.exportWAV(registerVoice);
 }
 
 function submit() {
     recordButton.disabled = true;
     stopButton.disabled = true;
     submitButton.disabled = true;
-    rec.exportWAV(registerVoice);
+}
+
+function createProfile() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", SERVER_ADDRESS+"/create");
+    xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.send();
+
+    xhr.onload = function(e) {
+        if (xhr.status === 200){
+            console.log("Server returned: ", e.target.statusText);
+            recordButton.disabled = false;
+            createButton.disabled = true;
+        }else {
+            aler ("Failed to create profile, please refresh and try again!");
+        }
+    };
 }
 
 function registerVoice(blob) {
-    var fd = new FormData();
-    $.ajax({
-        // Create voice profile
-        url: "https://cs319speechrecog.cognitiveservices.azure.com/spid/v1.0/identificationProfiles",
-        beforeSend: function (xhrObj) {
-            xhrObj.setRequestHeader("Content-Type", "application/json");
-            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-        },
-        type: "POST",
-        data: '{"locale":"en-us"}'
-    }).done(function (response) {
-        console.log("Successfully created voice profile");
-        guid = response.identificationProfileId;
-        fd.append("voice_sample", blob, "voiceSample");
-        // Create voice enrollment
-        var xhr = new XMLHttpRequest();
-        xhr.onload = function(e) {
-            if (this.readyState == 4){
-                console.log("Server returned: ", e.target.statusText);
-                recordButton.disabled = false;
+    more_audio.hidden = true;
+    enroll_success.hidden = true;
+
+    let fd = new FormData();
+    fd.append("voice_sample", blob, "voiceSample");
+    let xhr = new XMLHttpRequest();
+    xhr.onload = function(e) {
+        if (xhr.status === 200) {
+            let responseText = JSON.parse(xhr.responseText);
+            if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
+                more_audio.hidden = false;
+                enroll_success.hidden = true;
+            } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
+                more_audio.hidden = true;
+                enroll_success.hidden = false;
             }
-        };
-        xhr.open("POST", "https://cs319speechrecog.cognitiveservices.azure.com/spid/v1.0/identificationProfiles/"+guid+"/enroll", true);
-        // xhr.setRequestHeader("Content-Type", "multipart/form");
-        xhr.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-        xhr.send(fd);
-        console.log("Successfully enrolled voice profile");
-        // Get operation status 
-        xhr.onreadystatechange = function(){
-            if (xhr.readyState == 4 && xhr.status == 202)
-            {
-                console.log(xhr.responseText); // Another callback here
-                var xhr1 = new XMLHttpRequest();
-                url = xhr.getResponseHeader("Operation-Location");
-                xhr1.open("GET", url);
-                xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-                xhr1.send();
-                xhr1.onerror = function(){
-                    alert("Get operation status error");
-                }
-            }
-        };
-        xhr.onerror = function(){
-            alert("Error occured while enrolling");
+            recordButton.disabled = false;
+        } else {
+            more_audio.hidden = false;
         }
-    }).fail(function (err) {
-        alert("Create profile error");
-    });
+    };
+    xhr.open("POST", SERVER_ADDRESS + '/register');
+    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+    // xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.send(fd);
 }
