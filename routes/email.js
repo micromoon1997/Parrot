@@ -18,7 +18,7 @@ router.post('/', async function (req, res, next) {
       const result = await client
         .api(`/me/events/${meetingId}`)
         .get();
-      meetingHelper.updateMeeting(result);
+      await meetingHelper.updateMeeting(result);
     }
     res.sendStatus(202);
   }

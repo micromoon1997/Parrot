@@ -49,22 +49,21 @@ async function getAccessToken() {
     if (expiration > new Date()) {
       return accessToken;
     } else {
-      console.log('AccessToken has expired.');
+      console.warn('AccessToken has expired.');
     }
   }
   const refreshToken = process.env.OUTLOOK_AUTH_REFRESH_TOKEN;
   if (refreshToken) {
     try {
-      console.log('Requesting new AccessToken with RefreshToken');
+      console.log('Requesting new AccessToken with RefreshToken...');
       const token = await oauth2.accessToken.create({refresh_token: refreshToken}).refresh();
-      console.log(token);
       saveTokens(token.token.access_token, token.token.refresh_token, token.token.expires_at.getTime());
       return token.token.access_token;
     } catch (err) {
       console.error(`Failed to refresh token: ${err}`)
     }
   } else {
-    console.log('No RefreshToken found in .env. Please re-do the oauth again.')
+    console.error('No RefreshToken found in .env. Please re-do the oauth again.')
   }
 }
 
