@@ -1,33 +1,35 @@
 window.navigator = window.navigator || {};
 
-var audioContext = window.AudioContext || window.webkitAudioContext;
-var gumStream;
-var rec;
-var input;
-const SERVER_ADDRESS = "https://7b355025.ngrok.io";
+let audioContext = window.AudioContext || window.webkitAudioContext;
+let gumStream;
+let rec;
+let input;
+
+// everyone should set this to their own ngrok address
+const SERVER_ADDRESS = "https://fd50538f.ngrok.io";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
-
-var recordButton = document.getElementById("record");
+let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
-var stopButton = document.getElementById("stop");
+let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
 
+let more_audio = document.getElementById("more_audio");
+let enroll_success = document.getElementById("success");
 
-var submitButton = document.getElementById('submit');
+let submitButton = document.getElementById('submit');
 submitButton.addEventListener("click", submit);
-var recording = document.getElementById("recording");
-var guid;
+let recording = document.getElementById("recording");
 
 function startRecording() {
     console.log("record button clicked");
-    var options = { audio: true };
+    let options = { audio: true };
     recordButton.disabled = true;
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        var ac = new audioContext({sampleRate:16000});
+        let ac = new audioContext({sampleRate:16000});
         gumStream = stream;
         input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
@@ -59,55 +61,46 @@ function submit() {
 }
 
 function createProfile() {
-    
     let xhr = new XMLHttpRequest();
     xhr.open("POST", SERVER_ADDRESS+"/create");
     xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send();
 
     xhr.onload = function(e) {
-        if (this.readyState === 4 && xhr.status === 200){
+        if (xhr.status === 200){
             console.log("Server returned: ", e.target.statusText);
             recordButton.disabled = false;
             createButton.disabled = true;
+        }else {
+            aler ("Failed to create profile, please refresh and try again!");
         }
     };
 }
 
 function registerVoice(blob) {
+    more_audio.hidden = true;
+    enroll_success.hidden = true;
+
     let fd = new FormData();
     fd.append("voice_sample", blob, "voiceSample");
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
-        if (this.readyState === 4 && xhr.status === 200){
-            console.log("Server returned: ", xhr.responseText);
+        if (xhr.status === 200) {
+            let responseText = JSON.parse(xhr.responseText);
+            if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
+                more_audio.hidden = false;
+                enroll_success.hidden = true;
+            } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
+                more_audio.hidden = true;
+                enroll_success.hidden = false;
+            }
             recordButton.disabled = false;
+        } else {
+            more_audio.hidden = false;
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');
     // xhr.setRequestHeader("Content-Type", "multipart/form-data");
     // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
-    // console.log("Successfully enrolled voice profile");
-        // Get operation status 
-        // xhr.onreadystatechange = function(){
-        //     if (xhr.readyState == 4 && xhr.status == 202)
-        //     {
-        //         console.log(xhr.responseText); // Another callback here
-        //         var xhr1 = new XMLHttpRequest();
-        //         url = xhr.getResponseHeader("Operation-Location");
-        //         xhr1.open("GET", url);
-        //         xhr1.setRequestHeader("Ocp-Apim-Subscription-Key", key);
-        //         xhr1.send();
-        //         xhr1.onerror = function(){
-        //             alert("Get operation status error");
-        //         }
-        //     }
-        // };
-        // xhr.onerror = function(){
-        //     alert("Error occured while enrolling");
-        // }
-    // }).fail(function (err) {
-    //     alert("Create profile error");
-    // });
 }
