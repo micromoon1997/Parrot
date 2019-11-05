@@ -25,14 +25,14 @@ function createProfile() {
 
 function createEnrollment(blob, res) {
     let xhr = new XMLHttpRequest();
-    console.log(blob);
+    // console.log(blob);
     xhr.open("POST", MS_API_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
     xhr.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function () {
         if(xhr.status === 202){
             operationUrl = xhr.getResponseHeader("Operation-Location");
-            console.log(operationUrl);
+            // console.log(operationUrl);
             setTimeout(function() {
                 //status check api call
                 let xhrStatusCheck = new XMLHttpRequest();
@@ -41,15 +41,11 @@ function createEnrollment(blob, res) {
                 xhrStatusCheck.send();
                 xhrStatusCheck.onload = function(){
                     if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200){
-                        res.end(xhrStatusCheck.responseText);
-                        console.log(res);
+                        res.end(xhrStatusCheck.responseText, "string");
+                        // console.log(xhrStatusCheck.responseText)
                         // let responseText = JSON.parse(xhrStatusCheck.responseText);
-                        
                         // responseText.processingResult.enrollmentStatus;
-                        // responseText.processingResult.remainingEnrollmentSpeechTime;
-
-                        // console.log(xhrStatusCheck.responseText);
-                        
+                        // responseText.processingResult.remainingEnrollmentSpeechTime;       
                     } else {
                         console.log(xhrStatusCheck.statusText);
                     }
@@ -58,7 +54,7 @@ function createEnrollment(blob, res) {
         }
         else{
             console.log(xhr.status);
-            console.log(xhr.responseText);
+            // console.log(xhr.responseText);
         }
     }
     xhr.send(blob.buffer);

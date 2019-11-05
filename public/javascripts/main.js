@@ -4,7 +4,7 @@ var audioContext = window.AudioContext || window.webkitAudioContext;
 var gumStream;
 var rec;
 var input;
-const SERVER_ADDRESS = "https://d271538a.ngrok.io";
+const SERVER_ADDRESS = "https://7b355025.ngrok.io";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
