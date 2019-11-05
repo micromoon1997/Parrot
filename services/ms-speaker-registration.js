@@ -1,5 +1,5 @@
-const MS_API_KEY = process.env["MS_API_KEY"];
-const MS_API_ENDPOINT = process.env["MS_API_ENDPOINT"]
+const AZURE_KEY = process.env["AZURE_KEY"];
+const AZURE_ENDPOINT = process.env["AZURE_ENDPOINT"]
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 let guid;
@@ -8,9 +8,9 @@ let operationUrl;
 function createProfile() {
     let xhr = new XMLHttpRequest();
 
-    xhr.open("POST", MS_API_ENDPOINT + "/identificationProfiles");
+    xhr.open("POST", AZURE_ENDPOINT + "/identificationProfiles");
     xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
     xhr.send('{"locale":"en-us"}');
 
     xhr.onload = function(e){
@@ -26,8 +26,8 @@ function createProfile() {
 function createEnrollment(blob, res) {
     let xhr = new XMLHttpRequest();
     
-    xhr.open("POST", MS_API_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
-    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
+    xhr.open("POST", AZURE_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function () {
         if(xhr.status === 202){
@@ -36,7 +36,7 @@ function createEnrollment(blob, res) {
                 //status check api call
                 let xhrStatusCheck = new XMLHttpRequest();
                 xhrStatusCheck.open("GET", operationUrl);
-                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", MS_API_KEY);
+                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
                 xhrStatusCheck.send();
                 xhrStatusCheck.onload = function(){
                     if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200){
