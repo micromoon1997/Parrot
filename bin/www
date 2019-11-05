@@ -7,6 +7,7 @@ require('dotenv').config();
 const debug = require('debug')('parrot:server');
 const http = require('http');
 const serverService = require('../services/server');
+const databaseService = require('../services/database');
 const app = require('../app');
 
 /**
@@ -88,6 +89,7 @@ async function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  await databaseService.connectDatabase();
   if (await serverService.checkRefreshToken()) {
     await serverService.checkServerStatus();
   }

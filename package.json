@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "db:mock": "node scripts/populate-database.js"
   },
   "dependencies": {
     "@google-cloud/speech": "^3.3.0",
@@ -15,7 +16,6 @@
     "envfile": "^3.0.0",
     "express": "~4.16.1",
     "fluent-ffmpeg": "^2.1.2",
-    "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "isomorphic-fetch": "^2.2.1",
     "mongodb": "^3.3.3",
