@@ -7,7 +7,8 @@ async function connectDatabase() {
   const dbName = process.env.MONGODB_NAME;
   const dbUserName = process.env.MONGODB_USERNAME;
   const dbPassword = process.env.MONGODB_PASSWORD;
-  const dbUrl = `mongodb://${dbUserName}${dbPassword ? ':' + dbPassword : ''}${dbHost}:${dbPort}/${dbName}`;
+  const dbOptions = process.env.MONGODB_OPTIONS;
+  const dbUrl = `mongodb+srv://${dbUserName}${dbPassword ? ':' + dbPassword : ''}@${dbHost}:${dbPort}/${dbName}${dbOptions ? '?' + dbOptions : ''}`;
   const client = new MongoClient(dbUrl, { useNewUrlParser: true , useUnifiedTopology: true });
   try {
     await client.connect();
