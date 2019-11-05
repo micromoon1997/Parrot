@@ -6,7 +6,7 @@ let rec;
 let input;
 
 // everyone should set this to their own ngrok address
-const SERVER_ADDRESS = "https://fd50538f.ngrok.io";
+const SERVER_ADDRESS = "https://1622eeee.ngrok.io";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
@@ -15,8 +15,8 @@ recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
 
-let more_audio = document.getElementById("more_audio");
-let enroll_success = document.getElementById("success");
+let modeAudio = document.getElementById("more_audio");
+let enrollSuccess = document.getElementById("success");
 
 let submitButton = document.getElementById('submit');
 submitButton.addEventListener("click", submit);
@@ -55,9 +55,34 @@ function stopRecording() {
 }
 
 function submit() {
-    recordButton.disabled = true;
-    stopButton.disabled = true;
-    submitButton.disabled = true;
+    let firstName = $("#first_name").val();
+    let lastName = $("#last_name").val();
+    let email = $("#email").val();
+
+    let data = {
+        "firstName": firstName,
+        "lastName": lastName,
+        "email" : email
+    }
+
+    $.ajax({
+        type:"POST",
+        url: SERVER_ADDRESS + '/submit',
+        data:{
+            "firstName": firstName,
+            "lastName": lastName,
+            "email" : email
+        },
+        success: function(){
+            console.log("successfully update database");
+            recordButton.disabled = true;
+            stopButton.disabled = true;
+            submitButton.disabled = true;
+        },
+        error: function(err){
+            console.error(err);
+        }
+    });
 }
 
 function createProfile() {
@@ -78,8 +103,8 @@ function createProfile() {
 }
 
 function registerVoice(blob) {
-    more_audio.hidden = true;
-    enroll_success.hidden = true;
+    modeAudio.hidden = true;
+    enrollSuccess.hidden = true;
 
     let fd = new FormData();
     fd.append("voice_sample", blob, "voiceSample");
@@ -88,15 +113,16 @@ function registerVoice(blob) {
         if (xhr.status === 200) {
             let responseText = JSON.parse(xhr.responseText);
             if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
-                more_audio.hidden = false;
-                enroll_success.hidden = true;
+                modeAudio.hidden = false;
+                enrollSuccess.hidden = true;
             } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
-                more_audio.hidden = true;
-                enroll_success.hidden = false;
+                modeAudio.hidden = true;
+                enrollSuccess.hidden = false;
+                submitButton.disabled = false;
             }
             recordButton.disabled = false;
         } else {
-            more_audio.hidden = false;
+            modeAudio.hidden = false;
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');

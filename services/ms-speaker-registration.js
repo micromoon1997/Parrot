@@ -1,6 +1,10 @@
 const AZURE_KEY = process.env["AZURE_KEY"];
 const AZURE_ENDPOINT = process.env["AZURE_ENDPOINT"]
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const DBPassword = process.env["MONGO_DB_PASSWORD"]
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://project-parrot:"+ DBPassword +"@cluster0-518sn.azure.mongodb.net/test?retryWrites=true&w=majority";
 
 let guid;
 let operationUrl;
@@ -55,7 +59,18 @@ function createEnrollment(blob, res) {
     xhr.send(blob.buffer);
 }
 
+function submit(data) {
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    client.connect(err => {
+        const collection = client.db("test").collection("people");
+        // perform actions on the collection object
+        console.log(collection);
+        client.close();
+    });
+}
+
 module.exports = {
     createProfile: createProfile,
-    createEnrollment: createEnrollment
+    createEnrollment: createEnrollment,
+    submit: submit
 };

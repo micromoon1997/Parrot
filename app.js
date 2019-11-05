@@ -11,6 +11,7 @@ const usersRouter = require('./routes/users');
 const enrollRouter = require('./routes/enroll');
 const createProfileRouter = require('./routes/create-profile');
 const createEnrollmentRouter = require('./routes/create-enrollment');
+const submitToDatabaseRouter = require('./routes/submit');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/users', usersRouter);
 app.use('/enroll', enrollRouter);
 app.use('/create', createProfileRouter);
 app.use('/register', createEnrollmentRouter);
+app.use('/submit', submitToDatabaseRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

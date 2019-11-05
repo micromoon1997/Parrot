@@ -2,7 +2,7 @@ extends layout
 
 block content
   div
-    div 1. Please fill in your full name and email address.
+    div 1. Please fill in your first name, last name, and email address.
     div 2. Click the "Create Profile" button.
     div 3. Click the "Start Recording" button.
     div 4. Clearly and slowly read the following text.
@@ -17,16 +17,19 @@ block content
   p I DO NOT LIKE THEM, SAM-I-AM.
     
   div(class="input") 
-    span(style="margin-right : 3px") Full Name
-    input(type="text")
+    span(style="margin-right : 3px") First Name
+    input(type="text" id = "first_name")
+  div(class="input") 
+    span(style="margin-right : 3px") Last Name
+    input(type="text" id = "last_name")
   div(class = "input")
-    span(style="margin-right : 32px") Email
-    input(type="text")
+    span(style="margin-right : 35px") Email
+    input(type="text" id = "email")
   div
     button(id="create_profile") Create Profile 
     button(id="record" disabled) Start Recording
     button(id = "stop" disabled) Stop Recording
-    button(id="submit" disabled) Submit
+    button(id="submit") Submit
   div(id="recording" hidden) Recording...
 
   div Enrollment status check message:
