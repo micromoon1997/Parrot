@@ -1,5 +1,5 @@
-const AZURE_KEY = process.env["AZURE_KEY"];
-const AZURE_ENDPOINT = process.env["AZURE_ENDPOINT"]
+const AZURE_KEY = process.env["AZURE_COGNITIVE_KEY"];
+const AZURE_ENDPOINT = process.env["AZURE_COGNITIVE_ENDPOINT"];
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const DBPassword = process.env["MONGO_DB_PASSWORD"]
 
@@ -55,7 +55,7 @@ function createEnrollment(blob, res) {
             console.log(xhr.status);
             // console.log(xhr.responseText);
         }
-    }
+    };
     xhr.send(blob.buffer);
 }
 
