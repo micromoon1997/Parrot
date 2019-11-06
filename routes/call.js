@@ -7,11 +7,7 @@ const fetchRecording = require("../services/twilio/fetch-recording");
 let callSid;
 
 /* GET /call */
-<<<<<<< HEAD
-router.get('/:toPhoneNumber', async (req, res, next) => {
-=======
 router.get('/call/:toPhoneNumber', async (req, res) => {
->>>>>>> chore(routes): remove console logs
     const {toPhoneNumber} = req.params;
     callSid = await call({toPhoneNumber, fromPhoneNumber: '+12564144266', record: true});
     res.status(200);
