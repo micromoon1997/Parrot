@@ -6,6 +6,7 @@
 require('dotenv').config();
 const debug = require('debug')('parrot:server');
 const http = require('http');
+const fs = require("fs");
 const serverService = require('../services/server');
 const databaseService = require('../services/database');
 const app = require('../app');
@@ -84,6 +85,7 @@ function onError(error) {
  */
 
 async function onListening() {
+  const recordingDir = './Recordings';
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
@@ -93,5 +95,10 @@ async function onListening() {
   if (await serverService.checkRefreshToken()) {
     await serverService.checkServerStatus();
   }
+
+  if (!fs.existsSync(recordingDir)) {
+    fs.mkdirSync(recordingDir);
+  }
+
   console.log(`Server started. Listening on port: ${port}`);
 }
