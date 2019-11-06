@@ -5,21 +5,22 @@ const fetchRecordingSid = require("../services/twilio/fetch-recording-sid");
 const fetchRecording = require("../services/twilio/fetch-recording");
 
 let callSid;
-let recordingSid;
 
 /* GET /call */
+<<<<<<< HEAD
 router.get('/:toPhoneNumber', async (req, res, next) => {
+=======
+router.get('/call/:toPhoneNumber', async (req, res) => {
+>>>>>>> chore(routes): remove console logs
     const {toPhoneNumber} = req.params;
-    console.log(`To Phone Number: ${toPhoneNumber}`);
+    callSid = await call({toPhoneNumber, fromPhoneNumber: '+12564144266', record: true});
+    res.status(200);
+});
 
-    callSid = await call(toPhoneNumber, '+12564144266', true);
-    console.log(`Call Sid: ${callSid}`);
-
-    recordingSid = await fetchRecordingSid(callSid);
-    console.log(`Recording Sid: ${recordingSid}`);
-
-    await fetchRecording(recordingSid);
-    res.send("DONE!");
+router.get('/done', async res => {
+    const recordingSid = await fetchRecordingSid(callSid);
+    await fetchRecording({recordingSid, meetingId: 1111});
+    res.status(200);
 });
 
 module.exports = router;
