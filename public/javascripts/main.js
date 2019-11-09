@@ -6,7 +6,7 @@ let rec;
 let input;
 
 // everyone should set this to their own ngrok address
-const SERVER_ADDRESS = "https://1622eeee.ngrok.io";
+const SERVER_ADDRESS = "http://localhost:3000";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
@@ -72,6 +72,9 @@ function submit() {
             "firstName": firstName,
             "lastName": lastName,
             "email" : email
+        },
+        beforeSend: function(){
+            setRequestHeader("Content-Type", "application/json");
         },
         success: function(){
             console.log("successfully update database");

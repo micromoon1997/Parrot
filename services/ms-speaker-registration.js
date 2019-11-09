@@ -62,6 +62,20 @@ function submit(data) {
     const db = getDatabase();
     try {
         const record = db.collection('people').findOne({ email: data.email });
+        if(record) {
+            
+            record.azureSpeakerRecognitionGuid = guid;
+        } else{
+            const newRecord = {
+                email: data.email,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                azureSpeakerRecognitionGuid: guid
+            };
+            db.collection('people').insert(record, function(err, records){
+                console.log("Record added as "+records[0]._id);
+            })
+        }
         console.log(record);
         
     } catch(e) {
