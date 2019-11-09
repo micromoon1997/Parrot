@@ -4,16 +4,17 @@ const recordingStatusCallbackBaseurl = process.env.SERVER_ADDRESS;
 const client = require('twilio')(accountSid, authToken);
 
 // TODO: retrieve webex meeting
-const call = async ({
+const makeCall = async ({
+  meetingId,
   toPhoneNumber,
   fromPhoneNumber,
-  record
+  record,
 }) => {
   const data = await client
       .calls
       .create({
          record,
-         recordingStatusCallback: `${recordingStatusCallbackBaseurl}/call/done`,
+         recordingStatusCallback: `${recordingStatusCallbackBaseurl}/call/done/${meetingId}`,
          recordingStatusCallbackMethod: 'GET',
          recordingStatusCallbackEvent: ['completed'],
          url: 'http://demo.twilio.com/docs/voice.xml',
@@ -24,4 +25,4 @@ const call = async ({
   return data.sid;
 };
 
-module.exports = call;
+module.exports = makeCall;
