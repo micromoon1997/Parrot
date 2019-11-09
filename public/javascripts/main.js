@@ -73,9 +73,6 @@ function submit() {
             "lastName": lastName,
             "email" : email
         },
-        beforeSend: function(){
-            setRequestHeader("Content-Type", "application/json");
-        },
         success: function(){
             console.log("successfully update database");
             recordButton.disabled = true;
@@ -91,7 +88,7 @@ function submit() {
 function createProfile() {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", SERVER_ADDRESS+"/create");
-    xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send();
 
     xhr.onload = function(e) {
