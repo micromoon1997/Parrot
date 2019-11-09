@@ -59,12 +59,6 @@ function submit() {
     let lastName = $("#last_name").val();
     let email = $("#email").val();
 
-    let data = {
-        "firstName": firstName,
-        "lastName": lastName,
-        "email" : email
-    }
-
     $.ajax({
         type:"POST",
         url: SERVER_ADDRESS + '/submit',
