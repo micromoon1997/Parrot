@@ -1,21 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const call = require("../services/twilio/make-call");
-const fetchRecordingSid = require("../services/twilio/fetch-recording-sid");
-const fetchRecording = require("../services/twilio/fetch-recording");
+// const makeCall = require("../services/twilio/make-call");
+const {testRecording} = require("../services/schedule-call");
 
-let callSid;
+// router.get('/call/:toPhoneNumber', async (req, res) => {
+//     const {toPhoneNumber} = req.params;
+//     callSid = await makeCall({meetingId: 1111, toPhoneNumber, fromPhoneNumber: '+12564144266', record: true});
+//     res.status(200);
+// });
 
 /* GET /call */
-router.get('/call/:toPhoneNumber', async (req, res) => {
-    const {toPhoneNumber} = req.params;
-    callSid = await call({toPhoneNumber, fromPhoneNumber: '+12564144266', record: true});
-    res.status(200);
-});
-
-router.get('/done', async res => {
-    const recordingSid = await fetchRecordingSid(callSid);
-    await fetchRecording({recordingSid, meetingId: 1111});
+router.get('/done/:meetingId', async (req, res) => {
+    const {meetingId} = req.params;
+    testRecording(meetingId);
     res.status(200);
 });
 
