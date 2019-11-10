@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
-// const makeCall = require("../services/twilio/make-call");
-const {testRecording} = require("../services/schedule-call");
-
-// router.get('/call/:toPhoneNumber', async (req, res) => {
-//     const {toPhoneNumber} = req.params;
-//     callSid = await makeCall({meetingId: 1111, toPhoneNumber, fromPhoneNumber: '+12564144266', record: true});
-//     res.status(200);
-// });
+const {
+    fetchRecording,
+    fetchRecordingSid,
+    storeRecording,
+    updateDatabase
+} = require('../services/twilio');
 
 /* GET /call */
 router.get('/done/:meetingId', async (req, res) => {
     const {meetingId} = req.params;
-    testRecording(meetingId);
+
+    const recordingSid = await fetchRecordingSid(meetingId);
+    const recording = await fetchRecording({recordingSid, meetingId});
+    const relativePath = await storeRecording({recording, meetingId});
+    await updateDatabase({relativePath, meetingId});
+
     res.status(200);
 });
 
