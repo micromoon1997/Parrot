@@ -9,7 +9,6 @@ const http = require('http');
 const fs = require("fs");
 const serverService = require('../services/server');
 const databaseService = require('../services/database');
-const {scheduleCall} = require('../services/schedule-call');
 const app = require('../app');
 
 /**
@@ -100,20 +99,6 @@ async function onListening() {
   if (!fs.existsSync(recordingDir)) {
     fs.mkdirSync(recordingDir);
   }
-
-  let time = new Date();
-  time.setSeconds(time.getSeconds() + 10);
-
-  const mockMeetings = [
-    {
-      meetingId: '12345',
-      time,
-      toPhoneNumber: '17788655889',
-      fromPhoneNumber: '12564144266'
-    }
-  ];
-  
-  scheduleCall(mockMeetings[0]);
 
   console.log(`Server started. Listening on port: ${port}`);
 }
