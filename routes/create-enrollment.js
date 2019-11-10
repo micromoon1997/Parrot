@@ -6,9 +6,13 @@ let upload = multer();
 let type = upload.single('voice_sample');
 
 router.post('/', type, function(req, res, next) {
-
-    // TODO: add error handling
-    registration.createEnrollment(req.file, res);
+    try {
+        registration.createEnrollment(req.file, res);
+        res.setHeader("Content-type", 'application/json');
+        res.sendStatus(200);
+    } catch(err) {
+        console.log(err)
+    }
 });
 
 module.exports = router;

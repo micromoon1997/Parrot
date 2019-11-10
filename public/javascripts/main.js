@@ -15,7 +15,7 @@ recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
 
-let modeAudio = document.getElementById("more_audio");
+let moreAudio = document.getElementById("more_audio");
 let enrollSuccess = document.getElementById("success");
 
 let submitButton = document.getElementById('submit');
@@ -74,7 +74,7 @@ function submit() {
             submitButton.disabled = true;
         },
         error: function(err){
-            console.error(err);
+            console.log("Failed to submit voice registration with error: " + err);
         }
     });
 }
@@ -86,37 +86,45 @@ function createProfile() {
     xhr.send();
 
     xhr.onload = function(e) {
-        if (xhr.status === 200){
-            console.log("Server returned: ", e.target.statusText);
-            recordButton.disabled = false;
-            createButton.disabled = true;
-        }else {
-            aler ("Failed to create profile, please refresh and try again!");
+        try {
+            if (xhr.status === 200){
+                console.log("Server returned: ", e.target.statusText);
+                recordButton.disabled = false;
+                createButton.disabled = true;
+            } else {
+                alert ("Failed to create profile, please refresh and try again!");
+            }
+        } catch(err) {
+            console.log("Failed to create profile with error: " + err);
         }
     };
 }
 
 function registerVoice(blob) {
-    modeAudio.hidden = true;
+    moreAudio.hidden = true;
     enrollSuccess.hidden = true;
 
     let fd = new FormData();
     fd.append("voice_sample", blob, "voiceSample");
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
-        if (xhr.status === 200) {
-            let responseText = JSON.parse(xhr.responseText);
-            if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
-                modeAudio.hidden = false;
-                enrollSuccess.hidden = true;
-            } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
-                modeAudio.hidden = true;
-                enrollSuccess.hidden = false;
-                submitButton.disabled = false;
+        try {
+            if (xhr.status === 200) {
+                let responseText = JSON.parse(xhr.responseText);
+                if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
+                    moreAudio.hidden = false;
+                    enrollSuccess.hidden = true;
+                } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
+                    moreAudio.hidden = true;
+                    enrollSuccess.hidden = false;
+                    submitButton.disabled = false;
+                }
+                recordButton.disabled = false;
+            } else {
+                moreAudio.hidden = false;
             }
-            recordButton.disabled = false;
-        } else {
-            modeAudio.hidden = false;
+        } catch(err) {
+            console.log("Failed to create enrollment with error: " + err);
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');

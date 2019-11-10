@@ -15,13 +15,16 @@ function createProfile() {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
     xhr.send('{"locale":"en-us"}');
-
-    xhr.onload = function(e){
-        if(this.readyState === 4 && xhr.status === 200){
-            console.log("profile created");
-            guid = JSON.parse(xhr.responseText).identificationProfileId;
-        } else if (this.readyState === 4) {
-            console.log(xhr.statusText);
+    xhr.onload = function(){
+        try {
+            if (this.readyState === 4 && xhr.status === 200){
+                console.log("profile created");
+                guid = JSON.parse(xhr.responseText).identificationProfileId;
+            } else if (this.readyState === 4) {
+                console.log(xhr.statusText);
+            }
+        } catch(err) {
+            console.log("Failed to create profile with error: " + err)
         }
     }
 }
@@ -33,26 +36,29 @@ function createEnrollment(blob, res) {
     xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function () {
-        if(xhr.status === 202){
-            operationUrl = xhr.getResponseHeader("Operation-Location");
-            setTimeout(function() {
-                //status check api call
-                let xhrStatusCheck = new XMLHttpRequest();
-                xhrStatusCheck.open("GET", operationUrl);
-                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
-                xhrStatusCheck.send();
-                xhrStatusCheck.onload = function(){
-                    if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200){
-                        res.send(xhrStatusCheck.responseText);   
-                    } else {
-                        console.log(xhrStatusCheck.statusText);
+        try {
+            if (xhr.status === 202){
+                operationUrl = xhr.getResponseHeader("Operation-Location");
+                setTimeout(function() {
+                    // status check api call
+                    let xhrStatusCheck = new XMLHttpRequest();
+                    xhrStatusCheck.open("GET", operationUrl);
+                    xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
+                    xhrStatusCheck.send();
+                    xhrStatusCheck.onload = function(){
+                        if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200){
+                            res.send(xhrStatusCheck.responseText);   
+                        } else {
+                            console.log(xhrStatusCheck.statusText);
+                        }
                     }
-                }
-            }, 5000);
-        }
-        else{
-            console.log(xhr.status);
-            // console.log(xhr.responseText);
+                }, 5000);
+            }
+            else {
+                console.log(xhr.status);
+            }
+        } catch(err) {
+            console.log("Failed to create enrollment with error: " + err)
         }
     };
     xhr.send(blob.buffer);
@@ -74,8 +80,8 @@ function submit(data) {
                 upsert: true
             }
         )
-    } catch(e) {
-        console.error('Failed to update database: ' + e);
+    } catch(err) {
+        console.error("Failed to update database with error: " + err);
     }
 }
 
