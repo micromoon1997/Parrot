@@ -86,16 +86,12 @@ function createProfile() {
     xhr.send();
 
     xhr.onload = function(e) {
-        try {
-            if (xhr.status === 200){
-                console.log("Server returned: ", e.target.statusText);
-                recordButton.disabled = false;
-                createButton.disabled = true;
-            } else {
-                alert ("Failed to create profile, please refresh and try again!");
-            }
-        } catch(err) {
-            console.log("Failed to create profile with error: " + err);
+        if (xhr.readyState === 4 && xhr.status === 200){
+            console.log("Server returned: ", e.target.statusText);
+            recordButton.disabled = false;
+            createButton.disabled = true;
+        } else if (xhr.readyState === 4) {
+            alert("Failed to create profile, please refresh and try again!");
         }
     };
 }
@@ -108,23 +104,20 @@ function registerVoice(blob) {
     fd.append("voice_sample", blob, "voiceSample");
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
-        try {
-            if (xhr.status === 200) {
-                let responseText = JSON.parse(xhr.responseText);
-                if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
-                    moreAudio.hidden = false;
-                    enrollSuccess.hidden = true;
-                } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
-                    moreAudio.hidden = true;
-                    enrollSuccess.hidden = false;
-                    submitButton.disabled = false;
-                }
-                recordButton.disabled = false;
-            } else {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            let responseText = JSON.parse(xhr.responseText);
+            if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
                 moreAudio.hidden = false;
+                enrollSuccess.hidden = true;
+            } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
+                moreAudio.hidden = true;
+                enrollSuccess.hidden = false;
+                submitButton.disabled = false;
             }
-        } catch(err) {
-            console.log("Failed to create enrollment with error: " + err);
+            recordButton.disabled = false;
+        } else if( xhr.readyState === 4 ) {
+            moreAudio.hidden = false;
+            alert(JSON.parse(xhr.responseText).error.message);
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');
