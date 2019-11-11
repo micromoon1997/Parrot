@@ -13,9 +13,9 @@ const fetchRecording = async ({
             'Content-Type': 'audio/x-wav'
         }
     });
-    const response = await instance.get(`/Recordings/${recordingSid}`);
 
-    response.data.pipe(fs.createWriteStream(`./Recordings/${meetingId}.wav`));
+    const {data} = await instance.get(`/Recordings/${recordingSid}`);
+    return data;
 };
 
 module.exports = fetchRecording;
