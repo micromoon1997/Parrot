@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { getClient } = require('../services/outlook/ms-graph-client');
-const meetingHelper = require('../services/outlook/meeting');
+const { scheduleCall } = require('../services/schedule-call');
+const meetingService = require('../services/outlook/meeting');
 
 /* POST /email */
 router.post('/', async function (req, res, next) {
@@ -18,7 +19,8 @@ router.post('/', async function (req, res, next) {
       const result = await client
         .api(`/me/events/${meetingId}`)
         .get();
-      await meetingHelper.updateMeeting(result);
+      await meetingService.updateMeeting(result);
+      await scheduleCall(meetingId);
     }
     res.sendStatus(202);
   }

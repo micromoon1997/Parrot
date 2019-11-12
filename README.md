@@ -27,7 +27,7 @@ npm install
 
 5. Go back to your console and run `npm start`. If this is the first time you run the server, a Microsoft OAuth page will be opened. Login with your Microsoft account. Wait for a couple of seconds. Your will be redirected to the authorize page, and the access token will be automatically saved to `.env`.
 
-### Set up keys for Twillio
+### Set up keys for Twilio
 1. Register a Twilio account.
 
 2. Create a project. Make sure to navigate to Products section and select the "Phone Numbers" option.
@@ -37,8 +37,8 @@ npm install
 4. If not created yet, make a new file called .env in the root of the project. Add the Twilio Account Sid and Auth Token in that file as shown below:
 
 ```
-TWILLIO_ACCOUNT_SID={YOUR_ACCOUNT_SID}
-TWILLIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
+TWILIO_ACCOUNT_SID={YOUR_ACCOUNT_SID}
+TWILIO_AUTH_TOKEN={YOUR_AUTH_TOKEN)
 ```
 
 ### Setup keys for Google Speaker Diarization

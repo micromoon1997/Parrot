@@ -67,3 +67,4 @@ services/transcribe/output/
 .DS_Store
 .idea/
 database.json
+recordings/

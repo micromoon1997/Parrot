@@ -85,7 +85,7 @@ function onError(error) {
  */
 
 async function onListening() {
-  const recordingDir = './Recordings';
+  const recordingDir = './recordings';
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
