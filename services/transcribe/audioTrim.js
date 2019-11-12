@@ -1,9 +1,7 @@
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath("C:\\Users\\MSI\\Downloads\\ffmpeg-20191028-68f623d-win64-static\\ffmpeg-20191028-68f623d-win64-static\\bin\\ffmpeg.exe");
-ffmpeg.setFfprobePath("C:\\Users\\MSI\\Downloads\\ffmpeg-20191028-68f623d-win64-static\\ffmpeg-20191028-68f623d-win64-static\\bin\\ffprobe.exe");
+ffmpeg.setFfmpegPath("C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe");
+ffmpeg.setFfprobePath("C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe");
 
-
-const fileName = './testAudio/test2.wav';
 const minLength = 10;
 const wordsPause = 0.4;
 
@@ -29,11 +27,11 @@ function mergeDuration(value) {
     }
 }
 
-function getSpeakersClips(value, key, map) {
+function getSpeakersClips(value, key, recordingFileUrl) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < value.length; i++) {
             //console.log(value[i][0]);
-            ffmpeg(fileName)
+            ffmpeg(recordingFileUrl)
                 .setStartTime(value[i][0])
                 .setDuration(value[i][1] - value[i][0])
                 .on('error', function (err) {
@@ -41,20 +39,21 @@ function getSpeakersClips(value, key, map) {
                     reject();
                 })
                 .on('end', resolve)
-                .save('./output/tempdir/' + key + i + '.wav');
+                .save(`${__dirname}./output/tempdir/${key}${i}.wav`);
         }
     });
 }
 
-function getSpeakersSample(value, key, map) {
+function getSpeakersSample(value, key) {
     return new Promise((resolve, reject) => {
         let speakerAudio = ffmpeg();
         for (let i = 0; i < value.length; i++) {
             speakerAudio
-                .input('./output/tempdir/' + key + i + '.wav');
+                .input(`${__dirname}./output/tempdir/${key}${i}.wav`);
         }
 
-        speakerAudio.mergeToFile('./output/speaker' + key + '.wav')
+        speakerAudio.mergeToFile(`${__dirname}./output/speaker${key}.wav`)
+            .audioFrequency(16000)
             .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
                 reject();

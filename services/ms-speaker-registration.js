@@ -5,7 +5,7 @@ const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const axios = require('axios');
 const schedule = require('node-schedule');
 const fs = require('fs');
-const { getDatabase } = require('../services/database');
+const {getDatabase} = require('../services/database');
 
 const { getDatabase } = require('./database');
 
@@ -91,11 +91,11 @@ function submit(data) {
 async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
     console.log(profileIds.join());
     const promises = [];
-    for (let i=0; i < profileIds.length; i++) {
-        if (untaggedTranscription.includes(`speaker${i+1}`)) {
+    for (let i = 0; i < profileIds.length; i++) {
+        if (untaggedTranscription.includes(`speaker${i + 1}`)) {
             promises.push(
                 new Promise(async (resolve, reject) => {
-                    const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i+1}.wav`);
+                    const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i + 1}.wav`);
                     const options = {
                         method: 'post',
                         url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}`,
@@ -117,7 +117,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
                                 schedule.scheduledJobs[operationLocation].cancel();
                                 const personName = await getPersonName(data.processingResult.identifiedProfileId);
                                 console.log(personName);
-                                untaggedTranscription = untaggedTranscription.replace(new RegExp(`speaker${i+1}`, 'g'), personName);
+                                untaggedTranscription = untaggedTranscription.replace(new RegExp(`speaker${i + 1}`, 'g'), personName);
                                 resolve();
                             }
                             if (data.status === 'failed') {

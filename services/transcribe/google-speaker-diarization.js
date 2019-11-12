@@ -1,24 +1,39 @@
-process.env['GOOGLE_APPLICATION_CREDENTIALS'] = '../../private-key.json';
+process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
 
 const fs = require('fs');
 const audioTrim = require('./audioTrim');
-const { getDatabase } = require('../database');
-
 
 // Imports the Google Cloud client library
 const speech = require('@google-cloud/speech').v1p1beta1;
+const {Storage} = require('@google-cloud/storage');
 
 // Creates a client
 const client = new speech.SpeechClient();
-const speakersAudio = new Map();
-//const uri = 'file://C:/Users/MSI/OneDrive/UBC/CPSC_319/sandbox/google-speaker-diarization//conversation.wav';
+const storage = new Storage();
+
+async function uploadFile(fileName) {
+    const bucketName = 'untranscribed';
+    // Uploads a local file to the bucket
+    await storage.bucket(bucketName).upload(fileName, {
+        // By setting the option `destination`, you can change the name of the
+        // object you are uploading to a bucket.
+        metadata: {
+            // Enable long-lived HTTP caching headers
+            // Use only if the contents of the file will never change
+            // (If the contents will change, use cacheControl: 'no-cache')
+            cacheControl: 'public, max-age=31536000',
+        },
+    });
+    console.log(`${fileName} uploaded to ${bucketName}.`);
+}
 
 async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
-    // const [operation] = await client.longRunningRecognize(request);
-    // const [response] = await operation.promise();
+    await uploadFile(recordingFileUrl);
+    const fileName = recordingFileUrl.replace(/^.*[\\\/]/, '');
+    console.log(fileName);
     const audio = {
-    //uri: uri,
-        content: fs.readFileSync(recordingFileUrl).toString('base64')
+        uri: `gs://untranscribed/${fileName}`
+        //content: fs.readFileSync(recordingFileUrl).toString('base64')
     };
     const config = {
         encoding: 'LINEAR16',
@@ -34,11 +49,15 @@ async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
         config: config,
         audio: audio,
     };
-    const [response] = await client.recognize(request);
-    const transcription = response.results
-        .map(result => result.alternatives[0].transcript)
-        .join('\n');
-    //console.log(`Transcription: ${transcription}`);
+
+    const [operation] = await client.longRunningRecognize(request);
+    const [response] = await operation.promise();
+
+    // const transcription = response.results
+    //     .map(result => result.alternatives[0].transcript)
+    //     .join('\n');
+    // console.log(`Transcription: ${transcription}`);
+
     const result = response.results[response.results.length - 1];
     const wordsInfo = result.alternatives[0].words;
     // Note: The transcript within each result is separate and sequential per result.
@@ -47,6 +66,7 @@ async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
     // tags, you only have to take the words list from the last result:
     let prevTag = 0;
     let sentence = 'Meeting Minutes\n';
+    const speakersAudio = new Map();
     wordsInfo.forEach((a) => {
         let timeDuration = [parseInt(a.startTime.seconds) + (a.startTime.nanos) / 1000000000, parseInt(a.endTime.seconds) + (a.endTime.nanos) / 1000000000];
         if (a.speakerTag !== prevTag) {
@@ -72,15 +92,15 @@ async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
     console.log(speakersAudio);
 
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersClips(value, key);
+        await audioTrim.getSpeakersClips(value, key, recordingFileUrl);
     }
 
     for (let [key, value] of speakersAudio) {
         await audioTrim.getSpeakersSample(value, key);
     }
+    console.log(sentence);
     return sentence;
 }
-
 
 module.exports = {
     getUntaggedTranscription: getUntaggedTranscription

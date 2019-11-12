@@ -28,6 +28,7 @@
     "recorder-js": "^1.0.7",
     "simple-oauth2": "^3.0.0",
     "twilio": "^3.35.1",
-    "xmlhttprequest": "^1.8.0"
+    "xmlhttprequest": "^1.8.0",
+    "@google-cloud/storage": "latest"
   }
 }
