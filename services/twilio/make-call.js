@@ -1,6 +1,5 @@
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const recordingStatusCallbackBaseUrl = process.env.SERVER_ADDRESS;
 const client = require('twilio')(accountSid, authToken);
 
 // TODO: retrieve webex meeting
@@ -15,7 +14,7 @@ const makeCall = async ({
       .calls
       .create({
         record,
-        recordingStatusCallback: `${recordingStatusCallbackBaseUrl}/call/done/${meetingId}`,
+        recordingStatusCallback: `${process.env.SERVER_ADDRESS}/call/done/${meetingId}`,
         recordingStatusCallbackMethod: 'GET',
         recordingStatusCallbackEvent: ['completed'],
         url: 'http://demo.twilio.com/docs/voice.xml',
