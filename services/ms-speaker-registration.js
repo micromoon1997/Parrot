@@ -6,7 +6,13 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { getDatabase } = require('./database');
 
 let guid;
-let operationUrl;
+
+async function getPersonName(profileId) {
+    console.log(profileId);
+    const db = getDatabase();
+    const person = await db.collection('people').findOne({azureSpeakerRecognitionGuid: profileId});
+    return `${person.firstName} ${person.lastName}`;
+}
 
 function createProfile(res) {
     let xhr = new XMLHttpRequest();
@@ -33,7 +39,7 @@ function createEnrollment(blob, res) {
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 202) {
-            operationUrl = xhr.getResponseHeader("Operation-Location");
+            let operationUrl = xhr.getResponseHeader("Operation-Location");
             setTimeout(function() {
                 // status check api call
                 let xhrStatusCheck = new XMLHttpRequest();

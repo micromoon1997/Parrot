@@ -107,8 +107,12 @@ Current subscriptions:
 Server started. Listening on port: 3000
 
 ```
-#### Enroll voice samples
+#### Receive email with link for voice enrollment
 TODO
+
+#### Enroll voice samples
+Open up your browser, go to `localhost:3000/enroll`.
+Follow the instruction on the webpage
 
 #### Receive meeting invitation
 Start the server, send a meeting invitation to `wavesbot319@outlook.com`. Wait for a couple of seconds. 
