@@ -1,7 +1,7 @@
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
 
-const fs = require('fs');
 const audioTrim = require('./audioTrim');
+const bucketName = 'untranscribed';
 
 // Imports the Google Cloud client library
 const speech = require('@google-cloud/speech').v1p1beta1;
@@ -11,10 +11,9 @@ const {Storage} = require('@google-cloud/storage');
 const client = new speech.SpeechClient();
 const storage = new Storage();
 
-async function uploadFile(fileName) {
-    const bucketName = 'untranscribed';
+async function uploadFile(recordingFileUrl) {
     // Uploads a local file to the bucket
-    await storage.bucket(bucketName).upload(fileName, {
+    await storage.bucket(bucketName).upload(recordingFileUrl, {
         // By setting the option `destination`, you can change the name of the
         // object you are uploading to a bucket.
         metadata: {
@@ -24,15 +23,27 @@ async function uploadFile(fileName) {
             cacheControl: 'public, max-age=31536000',
         },
     });
-    console.log(`${fileName} uploaded to ${bucketName}.`);
+    console.log(`${recordingFileUrl} uploaded to ${bucketName}.`);
 }
 
-async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
-    await uploadFile(recordingFileUrl);
-    const fileName = recordingFileUrl.replace(/^.*[\\\/]/, '');
-    console.log(fileName);
+function createGoogleCloudWriteStream(fileName) {
+    return storage.bucket(bucketName).file(fileName).createWriteStream({
+        metadata: {
+            // Enable long-lived HTTP caching headers
+            // Use only if the contents of the file will never change
+            // (If the contents will change, use cacheControl: 'no-cache')
+            cacheControl: 'public, max-age=31536000'
+        }
+    });
+}
+
+function createGoogleCloudReadStream(fileName) {
+    return storage.bucket(bucketName).file(fileName).createReadStream();
+}
+
+async function getUntaggedTranscription(meetingId, speakerCount) {
     const audio = {
-        uri: `gs://untranscribed/${fileName}`
+        uri: `gs://${bucketName}/${meetingId}`
         //content: fs.readFileSync(recordingFileUrl).toString('base64')
     };
     const config = {
@@ -92,7 +103,7 @@ async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
     console.log(speakersAudio);
 
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersClips(value, key, recordingFileUrl);
+        await audioTrim.getSpeakersClips(value, key, createGoogleCloudReadStream(meetingId));
     }
 
     for (let [key, value] of speakersAudio) {
@@ -103,6 +114,7 @@ async function getUntaggedTranscription(recordingFileUrl, speakerCount) {
 }
 
 module.exports = {
-    getUntaggedTranscription: getUntaggedTranscription
+    getUntaggedTranscription: getUntaggedTranscription,
+    createGoogleCloudWriteStream: createGoogleCloudWriteStream
 };
 

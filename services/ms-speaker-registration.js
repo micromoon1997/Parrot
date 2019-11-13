@@ -12,6 +12,7 @@ let operationUrl;
 
 
 async function getPersonName(profileId) {
+    console.log(profileId);
     const db = getDatabase();
     const person = await db.collection('people').findOne({azureSpeakerRecognitionGuid: profileId});
     return `${person.firstName} ${person.lastName}`;
@@ -96,7 +97,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
                     const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i + 1}.wav`);
                     const options = {
                         method: 'post',
-                        url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}`,
+                        url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}&shortAudio=true`,
                         data: audioBlob,
                         headers: {
                             'Content-Type': 'application/octet-stream',
@@ -124,7 +125,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
                             }
                         });
                     } catch (err) {
-                        console.log(`Fail to get who is speaking:${err}`);
+                        console.log(`Fail to get who is speaking: ${err}`);
                     }
                 })
             );

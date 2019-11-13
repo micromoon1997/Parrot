@@ -1,6 +1,6 @@
 const ffmpeg = require('fluent-ffmpeg');
-ffmpeg.setFfmpegPath("C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe");
-ffmpeg.setFfprobePath("C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe");
+// ffmpeg.setFfmpegPath("C:\\ProgramData\\chocolatey\\bin\\ffmpeg.exe");
+// ffmpeg.setFfprobePath("C:\\ProgramData\\chocolatey\\bin\\ffprobe.exe");
 
 const minLength = 10;
 const wordsPause = 0.4;
@@ -27,11 +27,11 @@ function mergeDuration(value) {
     }
 }
 
-function getSpeakersClips(value, key, recordingFileUrl) {
+function getSpeakersClips(value, key, readStream) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < value.length; i++) {
             //console.log(value[i][0]);
-            ffmpeg(recordingFileUrl)
+            ffmpeg(readStream)
                 .setStartTime(value[i][0])
                 .setDuration(value[i][1] - value[i][0])
                 .on('error', function (err) {
@@ -39,7 +39,7 @@ function getSpeakersClips(value, key, recordingFileUrl) {
                     reject();
                 })
                 .on('end', resolve)
-                .save(`${__dirname}./output/tempdir/${key}${i}.wav`);
+                .save(`${__dirname}/output/tempdir/${key}${i}.wav`);
         }
     });
 }
@@ -49,10 +49,10 @@ function getSpeakersSample(value, key) {
         let speakerAudio = ffmpeg();
         for (let i = 0; i < value.length; i++) {
             speakerAudio
-                .input(`${__dirname}./output/tempdir/${key}${i}.wav`);
+                .input(`${__dirname}/output/tempdir/${key}${i}.wav`);
         }
 
-        speakerAudio.mergeToFile(`${__dirname}./output/speaker${key}.wav`)
+        speakerAudio.mergeToFile(`${__dirname}/output/speaker${key}.wav`)
             .audioFrequency(16000)
             .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
