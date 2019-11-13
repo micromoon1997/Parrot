@@ -130,7 +130,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
         }
     }
     Promise.all(promises).then(() => {
-        fs.writeFileSync(`${__dirname}/transcribe/output/${meetingId}.txt`, untaggedTranscription);
+        fs.writeFileSync(`${__appRoot}/transcriptions/${meetingId}.txt`, untaggedTranscription);
     }).catch((err) => {
         console.log(err);
     });
@@ -158,5 +158,4 @@ module.exports = {
     createEnrollment: createEnrollment,
     submit: submit,
     tagTranscription: tagTranscription,
-    getProfile: getProfile
 };

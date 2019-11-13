@@ -1,5 +1,6 @@
 const open = require('open');
 const schedule = require('node-schedule');
+const fs = require('fs');
 const subscribeService = require('../services/outlook/subsription');
 const meetingService = require('../services/outlook/meeting');
 const authService = require('../services/outlook/auth');
@@ -25,7 +26,21 @@ async function checkServerStatus() {
   });
 }
 
+function checkFileStorageFolders() {
+  const folders = [
+      'recordings',
+      'transcriptions',
+  ];
+  for (let folderName of folders) {
+    const dir = './' + folderName;
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+  }
+}
+
 module.exports = {
   checkRefreshToken: checkRefreshToken,
-  checkServerStatus: checkServerStatus
+  checkServerStatus: checkServerStatus,
+  checkFileStorageFolders: checkFileStorageFolders
 };
