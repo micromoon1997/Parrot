@@ -3,9 +3,9 @@
 
 ## Installation
 1. Install docker and set the enviornment to Linux.
-2. 
+2. Pull the latest docker images
 ```
-docker pull ychenvin/docker-parrot
+docker pull ychenvin/mtsparrot
 ```
 
 ## Run the image
