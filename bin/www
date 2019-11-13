@@ -85,15 +85,14 @@ function onError(error) {
  */
 
 async function onListening() {
+  const tunnel = await localtunnel({ port: 3000 });
+  process.env.SERVER_ADDRESS = tunnel.url;
+  console.log(process.env.SERVER_ADDRESS);
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-  if (process.env.SERVER_ADDRESS === 'localhost') {
-    const tunnel = await localtunnel({ port: port });
-    process.env.SERVER_ADDRESS = tunnel.url;
-  }
   await databaseService.connectDatabase();
   if (await serverService.checkRefreshToken()) {
     await serverService.checkServerStatus();
