@@ -10,7 +10,6 @@ const { getDatabase } = require('./database');
 let guid;
 
 async function getPersonName(profileId) {
-    console.log(profileId);
     const db = getDatabase();
     const person = await db.collection('people').findOne({azureSpeakerRecognitionGuid: profileId});
     return `${person.firstName} ${person.lastName}`;
@@ -107,13 +106,11 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
                         const operationLocation = response.headers['operation-location'];
                         console.log(operationLocation);
                         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-                            console.log("Scheduling a job!!!\n");
                             const data = await getOperationStatus(operationLocation);
                             //console.log(data);
                             if (data.status === 'succeeded') {
                                 schedule.scheduledJobs[operationLocation].cancel();
                                 const personName = await getPersonName(data.processingResult.identifiedProfileId);
-                                console.log(personName);
                                 untaggedTranscription = untaggedTranscription.replace(new RegExp(`speaker${i + 1}`, 'g'), personName);
                                 resolve();
                             }

@@ -30,7 +30,6 @@ function mergeDuration(value) {
 function getSpeakersClips(value, key, readStream) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < value.length; i++) {
-            //console.log(value[i][0]);
             ffmpeg(readStream)
                 .setStartTime(value[i][0])
                 .setDuration(value[i][1] - value[i][0])

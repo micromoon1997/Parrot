@@ -6,7 +6,7 @@ let rec;
 let input;
 
 // everyone should set this to their own ngrok address
-const SERVER_ADDRESS = "http://localhost:3000";
+const SERVER_ADDRESS = "http://localhost:8888";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
