@@ -18,7 +18,8 @@ docker run -d -p 8888:3000 mtsapp
 ``` 
 docker ps
 ```
-&& ```
+&
+```
 docker logs -f ${the running container id}
 ```
 
