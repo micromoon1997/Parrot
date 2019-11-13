@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { startTranscription } = require('../services/transcribe/transcription');
 const {
     fetchRecording,
     fetchRecordingSid,
@@ -13,9 +14,9 @@ router.get('/done/:meetingId', async (req, res) => {
 
     const recordingSid = await fetchRecordingSid(meetingId);
     const recording = await fetchRecording({recordingSid, meetingId});
-    const relativePath = await storeRecording({recording, meetingId});
-    await updateDatabase({relativePath, meetingId});
-
+    await storeRecording({recording, meetingId});
+    // await updateDatabase({relativePath, meetingId});
+    await startTranscription(meetingId);
     res.status(200);
 });
 

@@ -7,7 +7,7 @@ const updateDatabase = async ({
     const db = getDatabase();
     db.collection('meetings').updateOne(
         {meetingId},
-        {$set: {path: relativePath} },
+        {$set: {recordingFileUrl: relativePath} },
       );
 };
 
