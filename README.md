@@ -5,7 +5,7 @@
 ```shell script
 npm install
 ```
-And use [this link](https://drive.google.com/file/d/1e2ABvH4_c0_jFtRH4v8HSxKw7d4iEB4U/view?usp=sharing) to get the `.env` and `private-key.json` files.
+And use [this link](https://drive.google.com/drive/folders/1aE_LjLUkRsbb2ywcFtjPlKd4GyBHGaBB?usp=sharing) to get the `.env` and `private-key.json` files.
 Put thee files under the root directory of the app.
 
 You also need install [FFmpeg](https://www.ffmpeg.org/) on your machine to be able to run the transcription.
