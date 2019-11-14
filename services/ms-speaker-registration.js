@@ -16,14 +16,6 @@ async function getPersonName(profileId) {
     return `${person.firstName} ${person.lastName}`;
 }
 
-
-async function getPersonName(profileId) {
-    console.log(profileId);
-    const db = getDatabase();
-    const person = await db.collection('people').findOne({azureSpeakerRecognitionGuid: profileId});
-    return `${person.firstName} ${person.lastName}`;
-}
-
 function createProfile(res) {
     let xhr = new XMLHttpRequest();
 
@@ -138,7 +130,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
         }
     }
     Promise.all(promises).then(() => {
-        fs.writeFileSync(`${__dirname}/transcribe/output/${meetingId}.txt`, untaggedTranscription);
+        fs.writeFileSync(`${__appRoot}/transcriptions/${meetingId}.txt`, untaggedTranscription);
     }).catch((err) => {
         console.log(err);
     });
@@ -161,27 +153,9 @@ async function getOperationStatus(location) {
     }
 }
 
-async function getProfile(profileId) {
-    const options = {
-        method: 'get',
-        url: AZURE_ENDPOINT + `/identificationProfiles/${profileId}`,
-        headers: {
-            'Ocp-Apim-Subscription-Key': AZURE_KEY
-        }
-    };
-    try {
-        const response = await axios(options);
-        console.log(response.data);
-    } catch (err) {
-        console.log("Fail to get profile.\n");
-        console.log(err);
-    }
-}
-
 module.exports = {
     createProfile: createProfile,
     createEnrollment: createEnrollment,
     submit: submit,
     tagTranscription: tagTranscription,
-    getProfile: getProfile
 };

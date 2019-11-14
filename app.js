@@ -13,6 +13,7 @@ const createEnrollmentRouter = require('./routes/create-enrollment');
 const submitToDatabaseRouter = require('./routes/submit');
 
 const app = express();
+global.__appRoot = path.resolve(__dirname);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

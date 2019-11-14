@@ -68,3 +68,4 @@ services/transcribe/output/
 .idea/
 database.json
 recordings/
+transcriptions/
