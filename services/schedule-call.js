@@ -11,8 +11,8 @@ const scheduleCall = async (meetingId) => {
     }
     const toPhoneNumber = meeting.phoneNumber;
     const fromPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
-    const date = new Date(meeting.start.dateTime + 'Z');
-    // const date = new Date(Date.now() + 5000);
+    // const date = new Date(meeting.start.dateTime + 'Z');
+    const date = new Date(Date.now() + 5000);
     const job = schedule.scheduledJobs[meetingId];
     if (job) {
       job.cancel();

@@ -11,21 +11,6 @@ const {Storage} = require('@google-cloud/storage');
 const client = new speech.SpeechClient();
 const storage = new Storage();
 
-async function uploadFile(recordingFileUrl) {
-    // Uploads a local file to the bucket
-    await storage.bucket(bucketName).upload(recordingFileUrl, {
-        // By setting the option `destination`, you can change the name of the
-        // object you are uploading to a bucket.
-        metadata: {
-            // Enable long-lived HTTP caching headers
-            // Use only if the contents of the file will never change
-            // (If the contents will change, use cacheControl: 'no-cache')
-            cacheControl: 'public, max-age=31536000',
-        },
-    });
-    console.log(`${recordingFileUrl} uploaded to ${bucketName}.`);
-}
-
 function createGoogleCloudWriteStream(fileName) {
     return storage.bucket(bucketName).file(fileName).createWriteStream({
         metadata: {
