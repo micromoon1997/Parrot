@@ -17,7 +17,7 @@ const makeCall = async ({
         recordingStatusCallback: `${process.env.SERVER_ADDRESS}/call/done/${meetingId}`,
         recordingStatusCallbackMethod: 'GET',
         recordingStatusCallbackEvent: ['completed'],
-        url: 'http://demo.twilio.com/docs/voice.xml',
+        url: 'https://handler.twilio.com/twiml/EHa4832ab1c46be891eab82389260ed373',
         to: toPhoneNumber,
         from: fromPhoneNumber
       });
