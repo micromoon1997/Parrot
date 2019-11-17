@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "db:mock": "node scripts/populate-database.js"
+    "db:mock": "node scripts/populate-database.js",
+    "test": "mocha 'specs/**/*.js' --recursive"
   },
   "dependencies": {
     "@google-cloud/speech": "^3.3.0",
