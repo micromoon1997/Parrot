@@ -19,8 +19,11 @@ router.post('/', async function (req, res, next) {
       const result = await client
         .api(`/me/events/${meetingId}`)
         .get();
-      await meetingService.updateMeeting(result);
-      await scheduleCall(meetingId);
+      const isUpdated = await meetingService.updateMeeting(result);
+      if (isUpdated) {
+        await meetingService.checkParticipantsEnrollment(meetingId);
+        await scheduleCall(meetingId);
+      }
     }
     res.sendStatus(202);
   }
