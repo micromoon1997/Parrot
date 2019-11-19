@@ -14,7 +14,7 @@ function initClient() {
 }
 
 function getClient() {
-  if (!client) {
+  if (!client || authService.isAccessTokenExpired()) {
     client = initClient();
   }
   return client;
