@@ -37,35 +37,33 @@ function createProfile(res) {
     }
 }
 
-function createEnrollment(blob, res) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", AZURE_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
-    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function () {
-        if (xhr.readyState === 4 && xhr.status === 202) {
-            let operationUrl = xhr.getResponseHeader("Operation-Location");
-            setTimeout(function() {
-                // status check api call
-                let xhrStatusCheck = new XMLHttpRequest();
-                xhrStatusCheck.open("GET", operationUrl);
-                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
-                xhrStatusCheck.send();
-                xhrStatusCheck.onload = function(){
-                    if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200) {
-                        console.log(xhrStatusCheck.responseText);
-                        res.status(200).send(xhrStatusCheck.responseText);
-                    } else if (xhrStatusCheck.readyState === 4){
-                        res.status(500).send(JSON.stringify({ "error": { "message": xhrStatusCheck.responseText } }));
-                    }
-                }
-            }, 10000);
-        }
-        else if (xhr.readyState === 4) {
-            res.status(500).send(xhr.responseText);
+async function createEnrollment(audioBlob, res) {
+    const options = {
+        method: 'post',
+        url: `${AZURE_ENDPOINT}/identificationProfiles/${guid}/enroll`,
+        data: audioBlob.buffer,
+        headers: {
+            'Content-Type': 'application/octet-stream',
+            'Ocp-Apim-Subscription-Key': AZURE_KEY
         }
     };
-    xhr.send(blob.buffer);
+    try {
+        const response = await axios(options);
+        const operationLocation = response.headers['operation-location'];
+        schedule.scheduleJob(operationLocation, '*/2 * * * * *', async () => {
+            const data = await getOperationStatus(operationLocation);
+            if (data.status === 'succeeded') {
+                schedule.scheduledJobs[operationLocation].cancel();
+                res.status(200).send(data);
+            } else if (data.status === 'failed') {
+                schedule.scheduledJobs[operationLocation].cancel();
+                res.status(500).send(data);
+            }
+        });
+    } catch (err) {
+        console.log('Fail to create enrollment file:');
+        console.log(err.response.data.error);
+    }
 }
 
 function submit(data) {
