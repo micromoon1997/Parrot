@@ -1,7 +1,6 @@
 const AZURE_KEY = process.env["AZURE_COGNITIVE_KEY"];
 const AZURE_ENDPOINT = process.env["AZURE_COGNITIVE_ENDPOINT"];
 
-const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const axios = require('axios');
 const schedule = require('node-schedule');
 const fs = require('fs');
@@ -18,7 +17,8 @@ async function getPersonName(profileId) {
     }
 }
 
-async function createEnrollment(audioBlob, res) {
+async function createEnrollment(audioBlob, user_info, res) {
+    let guid;
     const profile_options = {
         method: 'post',
         url: `${AZURE_ENDPOINT}/identificationProfiles`,
@@ -33,7 +33,7 @@ async function createEnrollment(audioBlob, res) {
     axios(profile_options)
     .then((response) => {
         console.log(response.data);
-        let guid = response.data.identificationProfileId;
+        guid = response.data.identificationProfileId;
         const enroll_options = {
             method: 'post',
             url: `${AZURE_ENDPOINT}/identificationProfiles/${guid}/enroll`,
@@ -48,12 +48,13 @@ async function createEnrollment(audioBlob, res) {
     .then((response) => {
         const operationLocation = response.headers['operation-location'];
         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-            console.log('here');
+            console.log('waiting for operation status');
             const data = await getOperationStatus(operationLocation);
-            //console.log(data);
+            console.log(data);
             if (data.status === 'succeeded') {
                 console.log('succeeded');
                 schedule.scheduledJobs[operationLocation].cancel();
+                submit(user_info, guid);
                 res.status(200).send(data);
             } else if (data.status === 'failed') {
                 schedule.scheduledJobs[operationLocation].cancel();
@@ -64,18 +65,20 @@ async function createEnrollment(audioBlob, res) {
     })
     .catch((error) => {
         console.log(error);
+        res.status(500).send(error);
     });
 }
 
-function submit(data) {
+function submit(data, guid) {
+    console.log(data);
     const db = getDatabase();
     try {
         db.collection('people').updateOne(
             { email: data.email },
             { $set: {
                 email:data.email, 
-                firstName: data.firstName,
-                lastName: data.lastName,
+                firstName: data.first_name,
+                lastName: data.last_name,
                 phoneNumber: null,
                 azureSpeakerRecognitionGuid: guid
             } },
@@ -155,6 +158,6 @@ async function getOperationStatus(location) {
 
 module.exports = {
     createEnrollment: createEnrollment,
-    submit: submit,
+    // submit: submit,
     tagTranscription: tagTranscription,
 };
