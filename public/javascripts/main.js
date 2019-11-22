@@ -27,7 +27,7 @@ function startRecording() {
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        let ac = new audioContext({sampleRate:16000});
+        let ac = new audioContext();
         gumStream = stream;
         let input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
