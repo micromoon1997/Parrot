@@ -135,13 +135,7 @@
                 function exportWAV(type) {
                     var buffers = [];
                     buffers.push(mergeBuffers(recBuffers[0], recLength));
-                    var interleaved = undefined;
-                    if (numChannels === 2) {
-                        interleaved = interleave(buffers[0], buffers[1]);
-                    } else {
-                        interleaved = buffers[0];
-                    }
-                    var dataview = encodeWAV(interleaved);
+                    var dataview = encodeWAV(buffers[0]);
                     var audioBlob = new Blob([dataview], { type: type });
     
                     self.postMessage({ command: 'exportWAV', data: audioBlob });
@@ -169,21 +163,6 @@
                     for (var i = 0; i < recBuffers.length; i++) {
                         result.set(recBuffers[i], offset);
                         offset += recBuffers[i].length;
-                    }
-                    return result;
-                }
-    
-                function interleave(inputL, inputR) {
-                    var length = inputL.length + inputR.length;
-                    var result = new Float32Array(length);
-    
-                    var index = 0,
-                        inputIndex = 0;
-    
-                    while (index < length) {
-                        result[index++] = inputL[inputIndex];
-                        result[index++] = inputR[inputIndex];
-                        inputIndex++;
                     }
                     return result;
                 }
