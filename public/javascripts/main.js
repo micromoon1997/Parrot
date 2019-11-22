@@ -1,9 +1,7 @@
 window.navigator = window.navigator || {};
-
 let audioContext = window.AudioContext || window.webkitAudioContext;
 let gumStream;
 let rec;
-let input;
 
 // everyone should set this to their own ngrok address
 const SERVER_ADDRESS = "http://localhost:3000";
@@ -29,9 +27,9 @@ function startRecording() {
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        let ac = new audioContext({sampleRate:16000});
+        let ac = new audioContext();
         gumStream = stream;
-        input = ac.createMediaStreamSource(stream);
+        let input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
         rec.record();
         recording.hidden = false;
@@ -98,6 +96,7 @@ function createProfile() {
 
 function registerVoice(blob) {
     moreAudio.hidden = true;
+
     enrollSuccess.hidden = true;
 
     let fd = new FormData();

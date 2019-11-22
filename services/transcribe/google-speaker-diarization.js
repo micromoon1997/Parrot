@@ -86,7 +86,6 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     });
     speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
-
     for (let [key, value] of speakersAudio) {
         await audioTrim.getSpeakersClips(value, key, createGoogleCloudReadStream(meetingId));
     }
@@ -94,6 +93,7 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     for (let [key, value] of speakersAudio) {
         await audioTrim.getSpeakersSample(value, key);
     }
+
     console.log(sentence);
     return sentence;
 }
