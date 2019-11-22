@@ -6,8 +6,6 @@ let rec;
 // everyone should set this to their own ngrok address
 const SERVER_ADDRESS = "http://localhost:3000";
 
-let createButton = document.getElementById("create_profile");
-createButton.addEventListener("click", createProfile);
 let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
@@ -77,26 +75,9 @@ function submit() {
     });
 }
 
-function createProfile() {
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_ADDRESS+"/create");
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send();
-
-    xhr.onload = function(e) {
-        if (xhr.readyState === 4 && xhr.status === 200){
-            console.log("Server returned: ", e.target.statusText);
-            recordButton.disabled = false;
-            createButton.disabled = true;
-        } else if (xhr.readyState === 4) {
-            alert("Failed to create profile, please refresh and try again!");
-        }
-    };
-}
-
 function registerVoice(blob) {
-    moreAudio.hidden = true;
 
+    moreAudio.hidden = true;
     enrollSuccess.hidden = true;
 
     let fd = new FormData();
