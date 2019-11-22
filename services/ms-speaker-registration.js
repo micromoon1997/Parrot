@@ -158,6 +158,5 @@ async function getOperationStatus(location) {
 
 module.exports = {
     createEnrollment: createEnrollment,
-    // submit: submit,
     tagTranscription: tagTranscription,
 };
