@@ -8,7 +8,9 @@ const makeCall = async ({
   toPhoneNumber,
   fromPhoneNumber,
   record,
+  dialCode,
 }) => {
+  console.log(dialCode);
   try {
     const data = await client
       .calls
@@ -19,8 +21,10 @@ const makeCall = async ({
         recordingStatusCallbackEvent: ['completed'],
         url: 'https://handler.twilio.com/twiml/EHa4832ab1c46be891eab82389260ed373',
         to: toPhoneNumber,
-        from: fromPhoneNumber
+        from: fromPhoneNumber,
+        sendDigits: dialCode ? `ww${dialCode}#` : undefined
       });
+
     return data.sid;
   } catch (err) {
     console.log(`Call failed with error:${err}`);
