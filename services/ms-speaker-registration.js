@@ -53,13 +53,13 @@ function createEnrollment(blob, res) {
                 xhrStatusCheck.send();
                 xhrStatusCheck.onload = function(){
                     if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200) {
-                        // console.log(xhrStatusCheck.responseText);
+                        console.log(xhrStatusCheck.responseText);
                         res.status(200).send(xhrStatusCheck.responseText);
                     } else if (xhrStatusCheck.readyState === 4){
                         res.status(500).send(JSON.stringify({ "error": { "message": xhrStatusCheck.responseText } }));
                     }
                 }
-            }, 5000);
+            }, 10000);
         }
         else if (xhr.readyState === 4) {
             res.status(500).send(xhr.responseText);

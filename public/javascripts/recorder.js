@@ -60,9 +60,7 @@
                 if (!_this.recording) return;
     
                 var buffer = [];
-                for (var channel = 0; channel < _this.config.numChannels; channel++) {
-                    buffer.push(e.inputBuffer.getChannelData(channel));
-                }
+                buffer.push(e.inputBuffer.getChannelData(0));
                 _this.worker.postMessage({
                     command: 'record',
                     buffer: buffer
@@ -136,9 +134,7 @@
     
                 function exportWAV(type) {
                     var buffers = [];
-                    for (var channel = 0; channel < numChannels; channel++) {
-                        buffers.push(mergeBuffers(recBuffers[channel], recLength));
-                    }
+                    buffers.push(mergeBuffers(recBuffers[0], recLength));
                     var interleaved = undefined;
                     if (numChannels === 2) {
                         interleaved = interleave(buffers[0], buffers[1]);
@@ -153,9 +149,7 @@
     
                 function getBuffer() {
                     var buffers = [];
-                    for (var channel = 0; channel < numChannels; channel++) {
-                        buffers.push(mergeBuffers(recBuffers[channel], recLength));
-                    }
+                    buffers.push(mergeBuffers(recBuffers[0], recLength));
                     self.postMessage({ command: 'getBuffer', data: buffers });
                 }
     
@@ -166,9 +160,7 @@
                 }
     
                 function initBuffers() {
-                    for (var channel = 0; channel < numChannels; channel++) {
-                        recBuffers[channel] = [];
-                    }
+                    recBuffers[0] = [];
                 }
     
                 function mergeBuffers(recBuffers, recLength) {
