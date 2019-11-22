@@ -1,9 +1,9 @@
 window.navigator = window.navigator || {};
-
+// testing purpose
+URL = window.URL || window.webkitURL;   
 let audioContext = window.AudioContext || window.webkitAudioContext;
 let gumStream;
 let rec;
-let input;
 
 // everyone should set this to their own ngrok address
 const SERVER_ADDRESS = "http://localhost:3000";
@@ -31,7 +31,7 @@ function startRecording() {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
         let ac = new audioContext({sampleRate:16000});
         gumStream = stream;
-        input = ac.createMediaStreamSource(stream);
+        let input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
         rec.record();
         recording.hidden = false;
@@ -98,6 +98,26 @@ function createProfile() {
 
 function registerVoice(blob) {
     moreAudio.hidden = true;
+
+    // download wav file for testing purpose TODO: remove after bug fixed
+    var temp = document.getElementById("download");
+    var url = URL.createObjectURL(blob);
+	var au = document.createElement('audio');
+	var li = document.createElement('li');
+	var link = document.createElement('a');
+
+    au.controls = true;
+	au.src = url;
+
+	//save to disk link
+	link.href = url;
+	link.download = "filename"+".wav"; //download forces the browser to donwload the file using the  filename
+    link.innerHTML = "Save to disk";
+    li.appendChild(au);
+    li.appendChild(link);
+    temp.appendChild(li);
+    // end of downloading section
+
     enrollSuccess.hidden = true;
 
     let fd = new FormData();
