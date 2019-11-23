@@ -2,6 +2,7 @@ const { getDatabase } = require('../database');
 const { getUntaggedTranscription } = require('../transcribe/google-speaker-diarization');
 const { tagTranscription } = require('../ms-speaker-registration');
 const { clearWavFile } = require('./clear-temp-files');
+const { sendTranscriptionToManager } = require('../outlook/meeting');
 
 async function getProfileIds(meeting) {
     const profileIds = [];
@@ -25,6 +26,7 @@ async function startTranscription(meetingId) {
     const profileIds = await getProfileIds(meeting);
     const untaggedTranscription = await getUntaggedTranscription(meetingId, speakerCount);
     await tagTranscription(meetingId, profileIds, untaggedTranscription);
+    await sendTranscriptionToManager(meetingId);
     clearWavFile(`${__appRoot}/services/transcribe/output`);
 }
 
