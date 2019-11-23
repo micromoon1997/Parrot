@@ -1,13 +1,9 @@
-const fs = require('fs');
-const path = require('path');
 const googleClient = require('../../../services/transcribe/google-speaker-diarization');
-const removeHelper = require('../../../services/transcribe/clear-temporary-files');
+const {clearWavFile} = require('../../../services/transcribe/clear-temporary-files');
 
 describe('Google client', function () {
     after(function () {
-        removeHelper.clearWavFile(`${__dirname}/../../../tmp`);
-        // removeFilesFromFolder(`${__dirname}/../../../services/transcribe/output`);
-        // removeFilesFromFolder(`${__dirname}/../../../services/transcribe/output/tempdir`);
+        clearWavFile(`${__dirname}/../../../tmp`);
     });
 
     it('should get untagged transcription', async function () {

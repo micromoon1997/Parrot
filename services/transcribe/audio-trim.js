@@ -39,7 +39,7 @@ function splitAudioFileBySpeakers(value, key, readStream) {
                     reject();
                 })
                 .on('end', resolve)
-                .save(`${__dirname}/../../tmp/${key}${i}.wav`);
+                .save(`${__appRoot}/tmp/${key}${i}.wav`);
         }
     });
 }
@@ -49,10 +49,10 @@ function mergeAudioFilesOfSameSpeaker(value, key) {
         let speakerAudio = ffmpeg();
         for (let i = 0; i < value.length; i++) {
             speakerAudio
-                .input(`${__dirname}/../../tmp/${key}${i}.wav`);
+                .input(`${__appRoot}/tmp/${key}${i}.wav`);
         }
 
-        speakerAudio.mergeToFile(`${__dirname}/../../tmp/speaker${key}.wav`)
+        speakerAudio.mergeToFile(`${__appRoot}/tmp/speaker${key}.wav`)
             .audioFrequency(16000)
             .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
