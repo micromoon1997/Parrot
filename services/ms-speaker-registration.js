@@ -89,10 +89,10 @@ function submit(data) {
     }
 }
 
-async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
+async function tagTranscription(meetingId, profileIds, transcription) {
     const promises = [];
     for (let i = 0; i < profileIds.length; i++) {
-        if (untaggedTranscription.includes(`speaker${i + 1}`)) {
+        if (transcription.includes(`speaker${i + 1}`)) {
             promises.push(
                 new Promise(async (resolve, reject) => {
                     const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i + 1}.wav`);
@@ -115,7 +115,7 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
                             if (data.status === 'succeeded') {
                                 schedule.scheduledJobs[operationLocation].cancel();
                                 const personName = await getPersonName(data.processingResult.identifiedProfileId);
-                                untaggedTranscription = untaggedTranscription.replace(new RegExp(`speaker${i + 1}`, 'g'), personName);
+                                transcription = transcription.replace(new RegExp(`speaker${i + 1}`, 'g'), personName);
                                 resolve();
                             }
                             if (data.status === 'failed') {
@@ -130,8 +130,8 @@ async function tagTranscription(meetingId, profileIds, untaggedTranscription) {
             );
         }
     }
-    Promise.all(promises).then(() => {
-        fs.writeFileSync(`${__appRoot}/transcriptions/${meetingId}.txt`, untaggedTranscription);
+    return Promise.all(promises).then(() => {
+        fs.writeFileSync(`${__appRoot}/transcriptions/${meetingId}.txt`, transcription);
     }).catch((err) => {
         console.log(err);
     });

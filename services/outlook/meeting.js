@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { getClient } = require('./ms-graph-client');
 const { getDatabase } = require('../database');
 
@@ -94,7 +95,7 @@ async function sendEnrollmentNotification(emails) {
         contentType: 'text',
         content:
             `You haven't enrolled your voice. To let the transcription agent work properly,
-            please use the following link to enroll your voice before the meeting as soon as possible.\n
+            please use the following link to enroll your voice before the meeting.\n
             ${process.env.SERVER_ADDRESS}/enroll`
       },
       toRecipients: toRecipients
@@ -108,13 +109,56 @@ async function sendEnrollmentNotification(emails) {
     console.log('Voice enrollment notification has been sent to following emails:');
     console.log(toRecipients);
   } catch (err) {
-    console.error('Fail to send enrollment notification:\n');
+    console.error('Fail to send enrollment notification:');
     console.error(err);
+  }
+}
+
+async function sendTranscriptionToManager(meetingId) {
+  const db = getDatabase();
+  const meeting = await db.collection('meetings').findOne({meetingId});
+  const managerEmail = meeting.meetingManager.emailAddress.address;
+  const transcription = fs.readFileSync(`${__appRoot}/transcriptions/${meetingId}.txt`, 'base64');
+  const content = {
+    message: {
+      subject: 'Meeting Transcription',
+      body: {
+        contentType: 'text',
+        content:
+            `The attachment is the meeting transcription for the meeting start at ${meeting.start.dateTime}`
+      },
+      toRecipients: [
+        {
+          emailAddress: {
+            address: managerEmail
+          }
+        }
+      ],
+      hasAttachments: true,
+      attachments: [
+        {
+          '@odata.type': '#microsoft.graph.fileAttachment',
+          name: `${meeting.start.dateTime}.txt`,
+          contentBytes: transcription
+        }
+      ]
+    }
+  };
+  try {
+    const client = getClient();
+    await client
+        .api('/me/sendMail')
+        .post(content);
+    console.log('Meeting transcription has been sent to manager.')
+  } catch (err) {
+    console.log('Fail to send transcription:');
+    console.log(err);
   }
 }
 
 module.exports = {
   updateMeeting: updateMeeting,
   checkUpcomingMeetings: checkUpcomingMeetings,
-  checkParticipantsEnrollment: checkParticipantsEnrollment
+  checkParticipantsEnrollment: checkParticipantsEnrollment,
+  sendTranscriptionToManager: sendTranscriptionToManager
 };
