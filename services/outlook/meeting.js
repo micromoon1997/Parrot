@@ -32,6 +32,16 @@ async function checkUpcomingMeetings() {
   }
 }
 
+async function getMeetings() {
+  const db = await getDatabase();
+  try {
+    const meetings = await db.collection('meetings').find({}).toArray();
+    return meetings;
+  } catch (e) {
+    console.error('Fail to get meeting from database:' + e);
+  }
+}
+
 async function updateMeeting(meeting) {
   const meetingId = meeting.id;
   const db = await getDatabase();
@@ -114,6 +124,7 @@ async function sendEnrollmentNotification(emails) {
 }
 
 module.exports = {
+  getMeetings: getMeetings,
   updateMeeting: updateMeeting,
   checkUpcomingMeetings: checkUpcomingMeetings,
   checkParticipantsEnrollment: checkParticipantsEnrollment

@@ -4,8 +4,7 @@ const { startTranscription } = require('../services/transcribe/transcription');
 const {
     fetchRecording,
     fetchRecordingSid,
-    storeRecording,
-    updateDatabase
+    storeRecording
 } = require('../services/twilio');
 
 /* GET /call */
