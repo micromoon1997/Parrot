@@ -33,7 +33,7 @@ async function createProfile() {
     return response.data.identificationProfileId;
 }
 
-async function createEnrollment(audioBlob, res) {
+async function createEnrollment(audioBlob, guid, res) {
     const options = {
         method: 'post',
         url: `${AZURE_ENDPOINT}/identificationProfiles/${guid}/enroll`,
@@ -43,14 +43,11 @@ async function createEnrollment(audioBlob, res) {
             'Ocp-Apim-Subscription-Key': AZURE_KEY
         }
     };
-    console.log(guid);
     try {
         const response = await axios(options);
         const operationLocation = response.headers['operation-location'];
         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-            console.log('here');
             const data = await getOperationStatus(operationLocation);
-            //console.log(data);
             if (data.status === 'succeeded') {
                 console.log('succeeded');
                 schedule.scheduledJobs[operationLocation].cancel();
@@ -67,7 +64,7 @@ async function createEnrollment(audioBlob, res) {
     }
 }
 
-function submit(data) {
+function submit(data, guid) {
     const db = getDatabase();
     try {
         db.collection('people').updateOne(
