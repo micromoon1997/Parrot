@@ -95,7 +95,7 @@ async function tagTranscription(meetingId, profileIds, transcription) {
         if (transcription.includes(`speaker${i + 1}`)) {
             promises.push(
                 new Promise(async (resolve, reject) => {
-                    const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i + 1}.wav`);
+                    const audioBlob = fs.readFileSync(`${__appRoot}/tmp/speaker${i + 1}.wav`);
                     const options = {
                         method: 'post',
                         url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}&shortAudio=true`,
@@ -109,7 +109,6 @@ async function tagTranscription(meetingId, profileIds, transcription) {
                         const response = await axios(options);
                         const operationLocation = response.headers['operation-location'];
                         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-                            console.log("Scheduling a job!!!\n");
                             const data = await getOperationStatus(operationLocation);
                             //console.log(data);
                             if (data.status === 'succeeded') {
