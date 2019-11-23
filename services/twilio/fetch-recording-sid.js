@@ -10,7 +10,7 @@ const fetchRecordingSid = async meetingId => {
         const {callSid} = await db.collection('meetings').findOne({meetingId});
         const recordings = await client.recordings.list({callSid, limit: 20});
 
-        return recordings[0].sid;
+        return recordings.pop().sid;
     } catch (err) {
         console.log(`Fail to fetch recording sid:${err}`);
     }

@@ -1,7 +1,6 @@
 const azureClient = require('../../services/ms-speaker-registration');
 
 describe("Azure cognitive service client", function () {
-    this.timeout(20000);
     it('should tag transcription', async function () {
         const meetingId = 'test2';
         // Vincent, Yan and Desta respectively

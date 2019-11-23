@@ -1,6 +1,6 @@
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
 
-const audioTrim = require('./audioTrim');
+const audioTrim = require('./audio-trim');
 const bucketName = 'untranscribed';
 
 // Imports the Google Cloud client library
@@ -10,21 +10,6 @@ const {Storage} = require('@google-cloud/storage');
 // Creates a client
 const client = new speech.SpeechClient();
 const storage = new Storage();
-
-async function uploadFile(recordingFileUrl) {
-    // Uploads a local file to the bucket
-    await storage.bucket(bucketName).upload(recordingFileUrl, {
-        // By setting the option `destination`, you can change the name of the
-        // object you are uploading to a bucket.
-        metadata: {
-            // Enable long-lived HTTP caching headers
-            // Use only if the contents of the file will never change
-            // (If the contents will change, use cacheControl: 'no-cache')
-            cacheControl: 'public, max-age=31536000',
-        },
-    });
-    console.log(`${recordingFileUrl} uploaded to ${bucketName}.`);
-}
 
 function createGoogleCloudWriteStream(fileName) {
     return storage.bucket(bucketName).file(fileName).createWriteStream({
@@ -101,15 +86,13 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     });
     speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
-
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersClips(value, key, createGoogleCloudReadStream(meetingId));
+        await audioTrim.splitAudioFileBySpeakers(value, key, createGoogleCloudReadStream(meetingId));
     }
 
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersSample(value, key);
+        await audioTrim.mergeAudioFilesOfSameSpeaker(value, key);
     }
-    console.log(sentence);
     return sentence;
 }
 

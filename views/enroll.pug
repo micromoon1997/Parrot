@@ -9,6 +9,10 @@ block content
     div 5. Click the "Stop Recording" button when finished, and wait for enrollment status check.
     div 6. If enrollment status indicates that more audio is required, repeat steps 3 to 5 until enrollment is successful.
     div 7. Click the "Submit" button.
+  div 
+    div NOTE: 
+    div - To ensure optimal voice registration results, this sample voice enrollment should be done in a quiet environment without other voices and limited background noise.
+    div - Successful enrollment requires a minimum of 30 seconds of voice audio, not including silence. Repeat steps 3 to 5 until enough audio is accumulated.
   p I DO NOT LIKE THEM IN A HOUSE. 
   p I DO NOT LIKE THEM WITH A MOUSE. 
   p I DO NOT LIKE THEM HERE OR THERE. 
@@ -36,5 +40,5 @@ block content
   h4(id = "success" hidden) Enrollment successful!
   h4(id = "more_audio" hidden) More audio needed, repeat steps 3-5.
 
-  script(src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js")
+  script(src="/javascripts/recorder.js")
   script(src="/javascripts/main.js")

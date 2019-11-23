@@ -41,12 +41,16 @@ async function getTokenFromCode(auth_code) {
   }
 }
 
+function isAccessTokenExpired() {
+  const FIVE_MINUTE = 300000;
+  const expiration = new Date(parseInt(process.env.OUTLOOK_AUTH_EXPIRES_TIME) - FIVE_MINUTE);
+  return expiration < new Date();
+}
+
 async function getAccessToken() {
   let accessToken = process.env.OUTLOOK_AUTH_ACCESS_TOKEN;
   if (accessToken) {
-    const FIVE_MINUTE = 300000;
-    const expiration = new Date(parseInt(process.env.OUTLOOK_AUTH_EXPIRES_TIME) - FIVE_MINUTE);
-    if (expiration > new Date()) {
+    if (!isAccessTokenExpired()) {
       return accessToken;
     } else {
       console.warn('AccessToken has expired.');
@@ -82,5 +86,6 @@ function saveTokens(accessToken, refreshToken, expiresTime) {
 module.exports = {
   getAuthUrl: getAuthUrl,
   getTokenFromCode: getTokenFromCode,
-  getAccessToken: getAccessToken
+  getAccessToken: getAccessToken,
+  isAccessTokenExpired: isAccessTokenExpired
 };
