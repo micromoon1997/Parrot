@@ -57,6 +57,7 @@ async function createEnrollment(audioBlob, user_info, res) {
                 submit(user_info, guid);
                 res.status(200).send(data);
             } else if (data.status === 'failed') {
+                console.log('failed');
                 schedule.scheduledJobs[operationLocation].cancel();
                 console.log(data);
                 res.status(500).send(data);
@@ -64,8 +65,8 @@ async function createEnrollment(audioBlob, user_info, res) {
         });
     })
     .catch((error) => {
-        console.log(error);
-        res.status(500).send(error);
+        console.log(error.response.data);
+        res.status(500).send(error.response.data);
     });
 }
 

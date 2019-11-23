@@ -74,8 +74,14 @@ function registerVoice(blob) {
             }
             recordButton.disabled = false;
         } else if( xhr.readyState === 4 ) {
+            console.log(xhr.responseText);
+            let responseText = JSON.parse(xhr.responseText);
             moreAudio.hidden = false;
-            alert(JSON.parse(xhr.responseText).error.message);
+            if(responseText.status && responseText.status === 'failed') {
+                alert('Wrong audio format');
+            } else {
+                alert(responseText.error.message);
+            }
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');
