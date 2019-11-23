@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "db:mock": "node scripts/populate-database.js",
-    "test": "nyc mocha 'specs/**/*.js' --recursive"
+    "test": "nyc mocha 'specs/**/*.js' --recursive --timeout 20000"
   },
   "dependencies": {
     "@google-cloud/speech": "^3.3.0",
