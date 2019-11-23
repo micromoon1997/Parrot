@@ -88,6 +88,7 @@ function createProfile() {
             console.log("Server returned: ", e.target.statusText);
             recordButton.disabled = false;
             createButton.disabled = true;
+            document.cookie = `guid=${xhr.responseText}`;
         } else if (xhr.readyState === 4) {
             alert("Failed to create profile, please refresh and try again!");
         }
@@ -101,6 +102,7 @@ function registerVoice(blob) {
 
     let fd = new FormData();
     fd.append("voice_sample", blob, "voiceSample");
+    fd.append('cookie', document.cookie);
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
         if (xhr.readyState === 4 && xhr.status === 200) {

@@ -2,7 +2,11 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
+<<<<<<< HEAD
 const cors = require('cors');
+=======
+const cookieParser = require('cookie-parser');
+>>>>>>> Refactor create enrollment (#20)
 
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
@@ -22,6 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(cors());
+app.use(cookieParser());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
