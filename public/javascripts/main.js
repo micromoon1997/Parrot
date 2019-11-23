@@ -6,15 +6,19 @@ let rec;
 // everyone should set this to their own ngrok address
 const SERVER_ADDRESS = "http://localhost:3000";
 
+let createButton = document.getElementById("create_profile");
+createButton.addEventListener("click", createProfile);
 let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
 
-let recording = document.getElementById("recording");
-
 let moreAudio = document.getElementById("more_audio");
 let enrollSuccess = document.getElementById("success");
+
+let submitButton = document.getElementById('submit');
+submitButton.addEventListener("click", submit);
+let recording = document.getElementById("recording");
 
 function startRecording() {
     console.log("record button clicked");
@@ -48,18 +52,54 @@ function stopRecording() {
     rec.exportWAV(registerVoice);
 }
 
-function registerVoice(blob) {
-    let firstName = document.getElementById("first_name").value;
-    let lastName = document.getElementById("last_name").value;
-    let email = document.getElementById("email").value;
+function submit() {
+    let firstName = $("#first_name").val();
+    let lastName = $("#last_name").val();
+    let email = $("#email").val();
 
+    $.ajax({
+        type:"POST",
+        url: SERVER_ADDRESS + '/submit',
+        data:{
+            "firstName": firstName,
+            "lastName": lastName,
+            "email" : email
+        },
+        success: function(){
+            console.log("successfully update database");
+            recordButton.disabled = true;
+            stopButton.disabled = true;
+            submitButton.disabled = true;
+        },
+        error: function(err){
+            console.log("Failed to submit voice registration with error: " + err);
+        }
+    });
+}
+
+function createProfile() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", SERVER_ADDRESS+"/create");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send();
+
+    xhr.onload = function(e) {
+        if (xhr.readyState === 4 && xhr.status === 200){
+            console.log("Server returned: ", e.target.statusText);
+            recordButton.disabled = false;
+            createButton.disabled = true;
+        } else if (xhr.readyState === 4) {
+            alert("Failed to create profile, please refresh and try again!");
+        }
+    };
+}
+
+function registerVoice(blob) {
     moreAudio.hidden = true;
+
     enrollSuccess.hidden = true;
 
     let fd = new FormData();
-    fd.append("first_name", firstName);
-    fd.append('last_name', lastName);
-    fd.append('email', email);
     fd.append("voice_sample", blob, "voiceSample");
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
@@ -71,19 +111,16 @@ function registerVoice(blob) {
             } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
                 moreAudio.hidden = true;
                 enrollSuccess.hidden = false;
+                submitButton.disabled = false;
             }
             recordButton.disabled = false;
         } else if( xhr.readyState === 4 ) {
-            console.log(xhr.responseText);
-            let responseText = JSON.parse(xhr.responseText);
             moreAudio.hidden = false;
-            if(responseText.status && responseText.status === 'failed') {
-                alert('Wrong audio format');
-            } else {
-                alert(responseText.error.message);
-            }
+            alert(JSON.parse(xhr.responseText).error.message);
         }
     };
     xhr.open("POST", SERVER_ADDRESS + '/register');
+    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+    // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
 }

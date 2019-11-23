@@ -1,10 +1,13 @@
 const AZURE_KEY = process.env["AZURE_COGNITIVE_KEY"];
 const AZURE_ENDPOINT = process.env["AZURE_COGNITIVE_ENDPOINT"];
 
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 const axios = require('axios');
 const schedule = require('node-schedule');
 const fs = require('fs');
 const { getDatabase } = require('./database');
+
+let guid;
 
 async function getPersonName(profileId) {
     console.log(profileId);
@@ -17,69 +20,63 @@ async function getPersonName(profileId) {
     }
 }
 
-async function createEnrollment(audioBlob, user_info, res) {
-    let guid;
-    const profile_options = {
-        method: 'post',
-        url: `${AZURE_ENDPOINT}/identificationProfiles`,
-        headers: {
-            'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': AZURE_KEY
-        },
-        data: {
-            'locale': 'en-us'
+function createProfile(res) {
+    let xhr = new XMLHttpRequest();
+
+    xhr.open("POST", AZURE_ENDPOINT + "/identificationProfiles");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
+    xhr.send('{"locale":"en-us"}');
+    xhr.onload = function() {
+        if (this.readyState === 4 && xhr.status === 200){
+            guid = JSON.parse(xhr.responseText).identificationProfileId;
+            res.status(200).send();
+        } else if (this.readyState === 4) {
+            res.status(500).send("Failed to create profile");
         }
-    };
-    axios(profile_options)
-    .then((response) => {
-        console.log(response.data);
-        guid = response.data.identificationProfileId;
-        const enroll_options = {
-            method: 'post',
-            url: `${AZURE_ENDPOINT}/identificationProfiles/${guid}/enroll`,
-            data: audioBlob.buffer,
-            headers: {
-                'Content-Type': 'application/octet-stream',
-                'Ocp-Apim-Subscription-Key': AZURE_KEY
-            }
-        };
-        return axios(enroll_options);
-    })
-    .then((response) => {
-        const operationLocation = response.headers['operation-location'];
-        schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-            console.log('waiting for operation status');
-            const data = await getOperationStatus(operationLocation);
-            console.log(data);
-            if (data.status === 'succeeded') {
-                console.log('succeeded');
-                schedule.scheduledJobs[operationLocation].cancel();
-                submit(user_info, guid);
-                res.status(200).send(data);
-            } else if (data.status === 'failed') {
-                console.log('failed');
-                schedule.scheduledJobs[operationLocation].cancel();
-                console.log(data);
-                res.status(500).send(data);
-            }
-        });
-    })
-    .catch((error) => {
-        console.log(error.response.data);
-        res.status(500).send(error.response.data);
-    });
+    }
 }
 
-function submit(data, guid) {
-    console.log(data);
+function createEnrollment(blob, res) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", AZURE_ENDPOINT + '/identificationProfiles/' + guid + "/enroll");
+    xhr.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 202) {
+            let operationUrl = xhr.getResponseHeader("Operation-Location");
+            setTimeout(function() {
+                // status check api call
+                let xhrStatusCheck = new XMLHttpRequest();
+                xhrStatusCheck.open("GET", operationUrl);
+                xhrStatusCheck.setRequestHeader("Ocp-Apim-Subscription-Key", AZURE_KEY);
+                xhrStatusCheck.send();
+                xhrStatusCheck.onload = function(){
+                    if(xhrStatusCheck.readyState === 4 && xhrStatusCheck.status === 200) {
+                        console.log(xhrStatusCheck.responseText);
+                        res.status(200).send(xhrStatusCheck.responseText);
+                    } else if (xhrStatusCheck.readyState === 4){
+                        res.status(500).send(JSON.stringify({ "error": { "message": xhrStatusCheck.responseText } }));
+                    }
+                }
+            }, 10000);
+        }
+        else if (xhr.readyState === 4) {
+            res.status(500).send(xhr.responseText);
+        }
+    };
+    xhr.send(blob.buffer);
+}
+
+function submit(data) {
     const db = getDatabase();
     try {
         db.collection('people').updateOne(
             { email: data.email },
             { $set: {
                 email:data.email, 
-                firstName: data.first_name,
-                lastName: data.last_name,
+                firstName: data.firstName,
+                lastName: data.lastName,
                 phoneNumber: null,
                 azureSpeakerRecognitionGuid: guid
             } },
@@ -158,6 +155,8 @@ async function getOperationStatus(location) {
 }
 
 module.exports = {
+    createProfile: createProfile,
     createEnrollment: createEnrollment,
+    submit: submit,
     tagTranscription: tagTranscription,
 };
