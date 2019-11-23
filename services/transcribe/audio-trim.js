@@ -27,7 +27,7 @@ function mergeDuration(value) {
     }
 }
 
-function getSpeakersClips(value, key, readStream) {
+function splitAudioFileBySpeakers(value, key, readStream) {
     return new Promise((resolve, reject) => {
         for (let i = 0; i < value.length; i++) {
             //console.log(value[i][0]);
@@ -39,20 +39,20 @@ function getSpeakersClips(value, key, readStream) {
                     reject();
                 })
                 .on('end', resolve)
-                .save(`${__dirname}/output/tempdir/${key}${i}.wav`);
+                .save(`${__appRoot}/tmp/${key}${i}.wav`);
         }
     });
 }
 
-function getSpeakersSample(value, key) {
+function mergeAudioFilesOfSameSpeaker(value, key) {
     return new Promise((resolve, reject) => {
         let speakerAudio = ffmpeg();
         for (let i = 0; i < value.length; i++) {
             speakerAudio
-                .input(`${__dirname}/output/tempdir/${key}${i}.wav`);
+                .input(`${__appRoot}/tmp/${key}${i}.wav`);
         }
 
-        speakerAudio.mergeToFile(`${__dirname}/output/speaker${key}.wav`)
+        speakerAudio.mergeToFile(`${__appRoot}/tmp/speaker${key}.wav`)
             .audioFrequency(16000)
             .on('error', function (err) {
                 console.log('An error occurred: ' + err.message);
@@ -68,6 +68,6 @@ function getSpeakersSample(value, key) {
 module.exports = {
     checkAudioLength: checkAudioLength,
     mergeDuration: mergeDuration,
-    getSpeakersClips: getSpeakersClips,
-    getSpeakersSample: getSpeakersSample
+    splitAudioFileBySpeakers: splitAudioFileBySpeakers,
+    mergeAudioFilesOfSameSpeaker: mergeAudioFilesOfSameSpeaker
 };

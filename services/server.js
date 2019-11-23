@@ -28,7 +28,7 @@ async function checkServerStatus() {
 
 function checkFileStorageFolders() {
   const folders = [
-      'recordings',
+      'tmp',
       'transcriptions',
   ];
   for (let folderName of folders) {

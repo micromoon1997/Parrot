@@ -95,7 +95,7 @@ async function tagTranscription(meetingId, profileIds, transcription) {
         if (transcription.includes(`speaker${i + 1}`)) {
             promises.push(
                 new Promise(async (resolve, reject) => {
-                    const audioBlob = fs.readFileSync(`${__dirname}/transcribe/output/speaker${i + 1}.wav`);
+                    const audioBlob = fs.readFileSync(`${__appRoot}/tmp/speaker${i + 1}.wav`);
                     const options = {
                         method: 'post',
                         url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}&shortAudio=true`,
