@@ -109,7 +109,6 @@ async function tagTranscription(meetingId, profileIds, transcription) {
                         const response = await axios(options);
                         const operationLocation = response.headers['operation-location'];
                         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
-                            console.log("Scheduling a job!!!\n");
                             const data = await getOperationStatus(operationLocation);
                             //console.log(data);
                             if (data.status === 'succeeded') {

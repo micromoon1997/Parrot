@@ -59,7 +59,6 @@ function mergeAudioFilesOfSameSpeaker(value, key) {
                 reject();
             })
             .on('end', function () {
-                console.log('Processing finished !');
                 resolve();
             });
     });

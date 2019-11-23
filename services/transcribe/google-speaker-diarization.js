@@ -93,8 +93,6 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     for (let [key, value] of speakersAudio) {
         await audioTrim.mergeAudioFilesOfSameSpeaker(value, key);
     }
-
-    console.log(sentence);
     return sentence;
 }
 
