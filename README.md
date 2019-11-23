@@ -10,7 +10,7 @@ Put these files under the root directory of the app.
 
 You also need install [FFmpeg](https://www.ffmpeg.org/) on your machine to be able to run the transcription.
 1. For MacOS user, it is recommended to use ```brew install ffmpeg```.
-2. For Windows user, once download and installation are finished, make sure to declare the installation path in the ```services/transcribe/audioTrim.js```. The following code are recommended: 
+2. For Windows user, once download and installation are finished, make sure to declare the installation path in the ```services/transcribe/audio-trim.js```. The following code are recommended: 
 ```
 ffmpeg.setFfmpegPath("[Your installation path]\\ffmpeg.exe");
 ffmpeg.setFfprobePath("[Your installation path]\\ffprobe.exe");

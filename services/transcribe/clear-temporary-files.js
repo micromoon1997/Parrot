@@ -8,11 +8,10 @@ function clearWavFile(directory){
 
         for (const file of files) {
             let filename = path.join(directory, file);
-            console.log(filename);
             const stat = fs.lstatSync(filename);
             if (stat.isDirectory()){
                 clearWavFile(filename); //recurse
-            }else {
+            } else {
                 fs.unlink(filename, err => {
                     if (err) throw err;
                 });

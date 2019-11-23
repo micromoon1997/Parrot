@@ -1,6 +1,6 @@
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
 
-const audioTrim = require('./audioTrim');
+const audioTrim = require('./audio-trim');
 const bucketName = 'untranscribed';
 
 // Imports the Google Cloud client library
@@ -87,14 +87,12 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersClips(value, key, createGoogleCloudReadStream(meetingId));
+        await audioTrim.splitAudioFileBySpeakers(value, key, createGoogleCloudReadStream(meetingId));
     }
 
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersSample(value, key);
+        await audioTrim.mergeAudioFilesOfSameSpeaker(value, key);
     }
-
-    console.log(sentence);
     return sentence;
 }
 
