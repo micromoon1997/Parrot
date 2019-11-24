@@ -21,7 +21,7 @@ describe("Azure cognitive service client", function () {
     it('should tag transcription', async function () {
         const meetingId = 'test2';
         // Vincent, Yan and Desta respectively
-        const profileIds = ['4d83796d-bcce-4664-b336-7b80a25f11b6', '', 'b84adae5-881b-4dc4-b2ae-4c18b35839f7'];
+        const profileIds = ['4d83796d-bcce-4664-b336-7b80a25f11b6', 'b84adae5-881b-4dc4-b2ae-4c18b35839f7', 'b84adae5-881b-4dc4-b2ae-4c18b35839f7'];
         const untaggedTranscription = 'Meeting Minutes\n' +
             '\n' +
             'speaker3: Good morning Professor Austin early\n' +

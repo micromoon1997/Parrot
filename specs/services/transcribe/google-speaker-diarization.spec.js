@@ -1,23 +1,22 @@
-const fs = require('fs');
-const path = require('path');
+const expect = require('chai').expect;
 const googleClient = require('../../../services/transcribe/google-speaker-diarization');
-const removeHelper = require('../../../services/transcribe/clear-temporary-files');
+const {clearWavFile} = require('../../../services/transcribe/clear-temporary-files');
 
 describe('Google client', function () {
     after(function () {
-        removeHelper.clearWavFile(`${__dirname}/../../../tmp`);
-        // removeFilesFromFolder(`${__dirname}/../../../services/transcribe/output`);
-        // removeFilesFromFolder(`${__dirname}/../../../services/transcribe/output/tempdir`);
+        clearWavFile(`${__appRoot}/tmp`);
     });
 
     it('should get untagged transcription', async function () {
         const meetingId = 'test2.wav';
         const speakerCount = 3;
         const untaggedTranscription = await googleClient.getUntaggedTranscription(meetingId, speakerCount);
-        console.log(untaggedTranscription);
+        expect(untaggedTranscription).to.be.a('string');
     });
 
     it('should create google cloud write stream', function () {
-        // TODO
+        const stream = googleClient.createGoogleCloudWriteStream('123');
+        expect(stream).to.be.an('object');
+        expect(stream).to.have.a.property('writable', true);
     })
 });
