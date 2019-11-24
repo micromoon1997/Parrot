@@ -1,4 +1,7 @@
 process.env.NODE_ENV = 'test';
+process.env.PORT_TEST = 3002;
+const PORT = process.env.PORT_TEST;
+const ADDRESS = `http://localhost:${PORT}`;
 const azureClient = require('../../services/ms-speaker-registration');
 const chai = require('chai');
 const expect = chai.expect;
@@ -29,11 +32,11 @@ describe("createProfile", () => {
     console.log(process.env.NODE_ENV);
     it("It should call the createProfile function with status code 200", () => {
         // TODO: set test port
-        const scope = nock(/127/)
+        const scope = nock(ADDRESS)
             .post('/create')
             .reply(200, {identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f'});
 
-        chai.request(app)
+        chai.request(ADDRESS)
             .post('/create')
             .end((err,res) => {
                 // console.log(res);
@@ -44,7 +47,7 @@ describe("createProfile", () => {
     });
 
     it("It should call the createProfile function with status code 500", () => {
-        const scope = nock(/127/)
+        const scope = nock(ADDRESS)
             .post('/create')
             .reply(500, {
                 "error":{
@@ -53,7 +56,7 @@ describe("createProfile", () => {
                 }
             });
 
-        chai.request(app)
+        chai.request(ADDRESS)
             .post('/create')
             .end((err,res) => {
                 expect(res.statusCode).to.equal(500);
