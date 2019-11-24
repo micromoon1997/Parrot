@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 const azureClient = require('../../services/ms-speaker-registration');
 const chai = require('chai');
 const expect = chai.expect;
@@ -25,7 +26,7 @@ describe("Azure cognitive service client", function () {
 });
 
 describe("createProfile", () => {
-
+    console.log(process.env.NODE_ENV);
     it("It should call the createProfile function with status code 200", () => {
         // TODO: set test port
         const scope = nock(/127/)
@@ -35,6 +36,7 @@ describe("createProfile", () => {
         chai.request(app)
             .post('/create')
             .end((err,res) => {
+                // console.log(res);
                 expect(res.statusCode).to.equal(200);
                 const body = { identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f' };
                 expect(res.body).to.be.eql(body);
