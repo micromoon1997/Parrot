@@ -7,16 +7,6 @@ const nock = require('nock');
 
 chai.use(chaiHttp);
 
-// describe('hook', function(){
-//     before(function() {
-//         app.listen(3002);
-//     });
-    
-//     after(function() {
-//         app.close();
-//     }); 
-// });
-
 describe("Azure cognitive service client", function () {
     it('should tag transcription', async function () {
         const meetingId = 'test2';
@@ -35,9 +25,9 @@ describe("Azure cognitive service client", function () {
 });
 
 describe("createProfile", () => {
+
     it("It should call the createProfile function with status code 200", () => {
-        console.log("NODE_ENV");
-        console.log(process.env.NODE_ENV);
+        // TODO: set test port
         const scope = nock(/127/)
             .post('/create')
             .reply(200, {identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f'});
@@ -45,12 +35,12 @@ describe("createProfile", () => {
         chai.request(app)
             .post('/create')
             .end((err,res) => {
-                console.log(res);
                 expect(res.statusCode).to.equal(200);
                 const body = { identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f' };
                 expect(res.body).to.be.eql(body);
             });
     });
+
     it("It should call the createProfile function with status code 500", () => {
         const scope = nock(/127/)
             .post('/create')
@@ -59,20 +49,19 @@ describe("createProfile", () => {
                   "code" : "InternalServerError",
                   "message" : "SpeakerInvalid", 
                 }
-              });
+            });
 
         chai.request(app)
             .post('/create')
             .end((err,res) => {
-                console.log(res);
                 expect(res.statusCode).to.equal(500);
                 const body = {
                     "error":{
                       "code" : "InternalServerError",
                       "message" : "SpeakerInvalid", 
                     }
-                  };
+                };
                 expect(res.body).to.be.eql(body);
             });
-    })
+    });
 });
