@@ -52,9 +52,8 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-const port = (process.env.NODE_ENV && process.env.NODE_ENV === 'test') ? 3002:3000;
-console.log("what??");
-console.log(port);
-app.listen(port);
+if (process.env.NODE_ENV && process.env.NODE_ENV === 'test') {
+  app.listen(3002);
+}
 
 module.exports = app;

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "db:mock": "node scripts/populate-database.js",
-    "test": "cross-env NODE_ENV=test nyc mocha 'specs/services/ms-speaker-registration.spec.js' --timeout 20000"
+    "test": "cross-env NODE_ENV=test mocha 'specs/**/*.js' --recursive --timeout 20000",
+    "coverage": "nyc npm test"
   },
   "dependencies": {
     "@google-cloud/speech": "^3.3.0",

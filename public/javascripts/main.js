@@ -121,7 +121,5 @@ function registerVoice(blob) {
         }
     };
     xhr.open("POST", '/register');
-    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-    // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
 }
