@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
@@ -50,5 +51,10 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const port = (process.env.NODE_ENV && process.env.NODE_ENV === 'test') ? 3002:3000;
+console.log("what??");
+console.log(port);
+app.listen(port);
 
 module.exports = app;

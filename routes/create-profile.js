@@ -4,6 +4,7 @@ const registration = require('../services/ms-speaker-registration.js');
 
 router.post('/', async function(req, res, next) {
     try {
+        console.log('in router');
         const guid = await registration.createProfile();
         res.status(200).send(guid);
     } catch (err) {

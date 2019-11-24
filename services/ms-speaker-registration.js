@@ -18,6 +18,7 @@ async function getPersonName(profileId) {
 }
 
 async function createProfile() {
+    consolg.log('here');
     const options = {
         method: 'post',
         url: `${AZURE_ENDPOINT}/identificationProfiles`,
