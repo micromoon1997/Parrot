@@ -5,13 +5,14 @@
   "scripts": {
     "start": "node ./bin/www",
     "db:mock": "node scripts/populate-database.js",
-    "test": "nyc mocha 'specs/**/*.js' --recursive --timeout 20000"
+    "test": "export NODE_ENV=test || set NODE_ENV=test&& nyc mocha 'specs/services/ms-speaker-registration.spec.js' --timeout 20000"
   },
   "dependencies": {
     "@google-cloud/speech": "^3.3.0",
     "@google-cloud/storage": "latest",
     "@microsoft/microsoft-graph-client": "^2.0.0",
     "axios": "^0.19.0",
+    "chai-http": "^4.3.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.1.0",
@@ -25,6 +26,7 @@
     "mongodb": "^3.3.3",
     "morgan": "~1.9.1",
     "multer": "^1.4.2",
+    "nock": "^11.7.0",
     "node-schedule": "^1.3.2",
     "open": "^7.0.0",
     "path": "^0.12.7",
