@@ -4,7 +4,6 @@ let gumStream;
 let rec;
 
 // everyone should set this to their own ngrok address
-const SERVER_ADDRESS = "http://localhost:3000";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
@@ -59,7 +58,7 @@ function submit() {
 
     $.ajax({
         type:"POST",
-        url: SERVER_ADDRESS + '/submit',
+        url: '/submit',
         data:{
             "firstName": firstName,
             "lastName": lastName,
@@ -79,7 +78,7 @@ function submit() {
 
 function createProfile() {
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_ADDRESS+"/create");
+    xhr.open("POST", "/create");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send();
 
@@ -121,7 +120,7 @@ function registerVoice(blob) {
             alert(JSON.parse(xhr.responseText).error.message);
         }
     };
-    xhr.open("POST", SERVER_ADDRESS + '/register');
+    xhr.open("POST", '/register');
     // xhr.setRequestHeader("Content-Type", "multipart/form-data");
     // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
