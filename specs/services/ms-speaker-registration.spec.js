@@ -1,13 +1,13 @@
-process.env.NODE_ENV = 'test';
-process.env.PORT_TEST = 3002;
-const PORT = process.env.PORT_TEST;
-const ADDRESS = `http://localhost:${PORT}`;
 const azureClient = require('../../services/ms-speaker-registration');
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 const app = require('../../app');
 const nock = require('nock');
+const fs = require('fs');
+
+const AZURE_KEY = process.env["AZURE_COGNITIVE_KEY"];
+const AZURE_ENDPOINT = process.env["AZURE_COGNITIVE_ENDPOINT"];
 
 chai.use(chaiHttp);
 
@@ -29,44 +29,69 @@ describe("Azure cognitive service client", function () {
 });
 
 describe("createProfile", () => {
-    console.log(process.env.NODE_ENV);
-    it("It should call the createProfile function with status code 200", () => {
-        // TODO: set test port
-        const scope = nock(ADDRESS)
-            .post('/create')
-            .reply(200, {identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f'});
+    it("It should create profile", () => {
+        nock(AZURE_ENDPOINT, {
+            reqheaders: {
+                'Content-Type': 'application/json',
+                'Ocp-Apim-Subscription-Key': AZURE_KEY
+            }
+        })
+        .post('/identificationProfiles',{ locale: 'en-us' })
+        .reply(200, {identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f'});
 
-        chai.request(ADDRESS)
+        chai.request(app)
             .post('/create')
             .end((err,res) => {
-                // console.log(res);
                 expect(res.statusCode).to.equal(200);
-                const body = { identificationProfileId: '49a36324-fc4b-4387-aa06-090cfbf0064f' };
-                expect(res.body).to.be.eql(body);
+                expect(res.text).to.be.equal('49a36324-fc4b-4387-aa06-090cfbf0064f');
             });
     });
 
     it("It should call the createProfile function with status code 500", () => {
-        const scope = nock(ADDRESS)
-            .post('/create')
-            .reply(500, {
-                "error":{
-                  "code" : "InternalServerError",
-                  "message" : "SpeakerInvalid", 
-                }
-            });
+        nock(AZURE_ENDPOINT,{
+            reqheaders: {
+                'Content-Type': 'application/json',
+                'Ocp-Apim-Subscription-Key': AZURE_KEY
+            }})
+        .post('/identificationProfiles',{ locale: 'en-us' })
+        .reply(500, {
+            "error":{
+              "code" : "InternalServerError",
+              "message" : "SpeakerInvalid", 
+            }
+        });
 
-        chai.request(ADDRESS)
+        chai.request(app)
             .post('/create')
             .end((err,res) => {
                 expect(res.statusCode).to.equal(500);
-                const body = {
-                    "error":{
-                      "code" : "InternalServerError",
-                      "message" : "SpeakerInvalid", 
-                    }
-                };
-                expect(res.body).to.be.eql(body);
             });
     });
 });
+
+// describe('createEnrollment', () => {
+//     let guid = '49a36324-fc4b-4387-aa06-090cfbf0064f';
+//     it('should create enrollment with a valid audio', () => {
+//         console.log(AZURE_ENDPOINT);
+//         nock(AZURE_ENDPOINT)
+//         .post(`/identificationProfiles/${guid}/enroll`)
+//         .reply(200, {
+//             "status": "succeeded",
+//             "processingResult": 
+//             {
+//                 "enrollmentStatus" : "Enrolling",
+//                 "remainingEnrollmentSpeechTime" : 15.0,
+//                 "speechTime" : 15.0,
+//                 "enrollmentSpeechTime":15.0
+//             }
+//         });
+
+//         chai.request(ADDRESS)
+//             .post('/enroll')
+//             .attach('voice_sample', fs.readFileSync('../test-audio/10sec_valid_test.wav'))
+//             .end((err,res) => {
+//                 expect(res.statusCode).to.equal(200);
+//                 expect(res.body.status).to.equal('succeeded');
+//             });
+//     });
+// });

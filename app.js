@@ -52,8 +52,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-if (process.env.NODE_ENV && process.env.NODE_ENV === 'test') {
-  app.listen(process.env.PORT_TEST);
-}
-
 module.exports = app;
