@@ -56,12 +56,13 @@ async function createEnrollment(audioBlob, guid, res) {
             } else if (data.status === 'failed') {
                 schedule.scheduledJobs[operationLocation].cancel();
                 console.log(data);
-                res.status(500).send(data);
+                res.status(500).send(data.message);
             }
         });
     } catch (err) {
         console.log('Fail to create enrollment file:');
-        console.log(err.response.data.error);
+        console.log(err.response.data);
+        res.status(500).send(err.response.data.error.message);
     }
 }
 

@@ -117,7 +117,7 @@ function registerVoice(blob) {
             recordButton.disabled = false;
         } else if( xhr.readyState === 4 ) {
             moreAudio.hidden = false;
-            alert(JSON.parse(xhr.responseText).error.message);
+            alert(xhr.responseText);
         }
     };
     xhr.open("POST", '/register');
