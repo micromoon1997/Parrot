@@ -1,12 +1,9 @@
 window.navigator = window.navigator || {};
-
 let audioContext = window.AudioContext || window.webkitAudioContext;
 let gumStream;
 let rec;
-let input;
 
 // everyone should set this to their own ngrok address
-const SERVER_ADDRESS = "http://localhost:3000";
 
 let createButton = document.getElementById("create_profile");
 createButton.addEventListener("click", createProfile);
@@ -14,12 +11,13 @@ let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
+let submitButton = document.getElementById('submit');
+submitButton.addEventListener("click", submit);
 
 let moreAudio = document.getElementById("more_audio");
 let enrollSuccess = document.getElementById("success");
+let dbUpdated = document.getElementById('db_updated');
 
-let submitButton = document.getElementById('submit');
-submitButton.addEventListener("click", submit);
 let recording = document.getElementById("recording");
 
 function startRecording() {
@@ -29,9 +27,9 @@ function startRecording() {
     stopButton.disabled = false;
     navigator.mediaDevices.getUserMedia(options).then(function (stream) {
         console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
-        let ac = new audioContext({sampleRate:16000});
+        let ac = new audioContext();
         gumStream = stream;
-        input = ac.createMediaStreamSource(stream);
+        let input = ac.createMediaStreamSource(stream);
         rec = new Recorder(input, { numChannels: 1 });
         rec.record();
         recording.hidden = false;
@@ -61,7 +59,7 @@ function submit() {
 
     $.ajax({
         type:"POST",
-        url: SERVER_ADDRESS + '/submit',
+        url: '/submit',
         data:{
             "firstName": firstName,
             "lastName": lastName,
@@ -72,6 +70,8 @@ function submit() {
             recordButton.disabled = true;
             stopButton.disabled = true;
             submitButton.disabled = true;
+            enrollSuccess.hidden = true;
+            dbUpdated.hidden = false;
         },
         error: function(err){
             console.log("Failed to submit voice registration with error: " + err);
@@ -81,7 +81,7 @@ function submit() {
 
 function createProfile() {
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", SERVER_ADDRESS+"/create");
+    xhr.open("POST", "/create");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send();
 
@@ -90,6 +90,7 @@ function createProfile() {
             console.log("Server returned: ", e.target.statusText);
             recordButton.disabled = false;
             createButton.disabled = true;
+            document.cookie = `guid=${xhr.responseText}`;
         } else if (xhr.readyState === 4) {
             alert("Failed to create profile, please refresh and try again!");
         }
@@ -98,10 +99,12 @@ function createProfile() {
 
 function registerVoice(blob) {
     moreAudio.hidden = true;
+
     enrollSuccess.hidden = true;
 
     let fd = new FormData();
     fd.append("voice_sample", blob, "voiceSample");
+    fd.append('cookie', document.cookie);
     let xhr = new XMLHttpRequest();
     xhr.onload = function(e) {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -109,19 +112,18 @@ function registerVoice(blob) {
             if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
                 moreAudio.hidden = false;
                 enrollSuccess.hidden = true;
+                recordButton.disabled = false;
             } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
                 moreAudio.hidden = true;
                 enrollSuccess.hidden = false;
                 submitButton.disabled = false;
+                recordButton.disabled = true;
             }
-            recordButton.disabled = false;
         } else if( xhr.readyState === 4 ) {
             moreAudio.hidden = false;
-            alert(JSON.parse(xhr.responseText).error.message);
+            alert(xhr.responseText);
         }
     };
-    xhr.open("POST", SERVER_ADDRESS + '/register');
-    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-    // xhr.setRequestHeader("Content-Type", "applicaton/json");
+    xhr.open("POST", '/register');
     xhr.send(fd);
 }

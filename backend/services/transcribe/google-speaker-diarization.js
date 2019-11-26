@@ -1,6 +1,6 @@
 process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
 
-const audioTrim = require('./audioTrim');
+const audioTrim = require('./audio-trim');
 const bucketName = 'untranscribed';
 
 // Imports the Google Cloud client library
@@ -24,6 +24,10 @@ function createGoogleCloudWriteStream(fileName) {
 
 function createGoogleCloudReadStream(fileName) {
     return storage.bucket(bucketName).file(fileName).createReadStream();
+}
+
+async function downloadFileFromGoogleCloud(fileName, destination) {
+    await storage.bucket(bucketName).file(fileName).download({destination});
 }
 
 async function getUntaggedTranscription(meetingId, speakerCount) {
@@ -86,20 +90,20 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     });
     speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
-
+    const path = `${__appRoot}/tmp/${meetingId}.wav`;
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersClips(value, key, createGoogleCloudReadStream(meetingId));
+        await audioTrim.splitAudioFileBySpeakers(value, key, path);
     }
 
     for (let [key, value] of speakersAudio) {
-        await audioTrim.getSpeakersSample(value, key);
+        await audioTrim.mergeAudioFilesOfSameSpeaker(value, key);
     }
-    console.log(sentence);
     return sentence;
 }
 
 module.exports = {
     getUntaggedTranscription: getUntaggedTranscription,
-    createGoogleCloudWriteStream: createGoogleCloudWriteStream
+    createGoogleCloudWriteStream: createGoogleCloudWriteStream,
+    downloadFileFromGoogleCloud: downloadFileFromGoogleCloud
 };
 

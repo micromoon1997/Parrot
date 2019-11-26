@@ -5,9 +5,9 @@ const multer = require('multer');
 let upload = multer();
 let type = upload.single('voice_sample');
 
-router.post('/', type, function(req, res, next) {
-    registration.createEnrollment(req.file, res);
+router.post('/', type, async function(req, res, next) {
     res.setHeader("Content-type", 'application/json');
+    await registration.createEnrollment(req.file, req.cookies.guid, res);
 });
 
 module.exports = router;
