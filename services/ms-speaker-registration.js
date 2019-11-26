@@ -95,7 +95,7 @@ async function tagTranscription(meetingId, profileIds, transcription) {
                     const audioBlob = fs.readFileSync(`${__appRoot}/tmp/speaker${i + 1}.wav`);
                     const options = {
                         method: 'post',
-                        url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}?shortAudio=true`,
+                        url: AZURE_ENDPOINT + `/identify?identificationProfileIds=${profileIds.join()}&shortAudio=true`,
                         data: audioBlob,
                         headers: {
                             'Content-Type': 'application/octet-stream',
