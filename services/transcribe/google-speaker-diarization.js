@@ -26,6 +26,10 @@ function createGoogleCloudReadStream(fileName) {
     return storage.bucket(bucketName).file(fileName).createReadStream();
 }
 
+async function downloadFileFromGoogleCloud(fileName, destination) {
+    await storage.bucket(bucketName).file(fileName).download({destination});
+}
+
 async function getUntaggedTranscription(meetingId, speakerCount) {
     const audio = {
         uri: `gs://${bucketName}/${meetingId}`
@@ -86,8 +90,9 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
     });
     speakersAudio.forEach(audioTrim.mergeDuration);
     console.log(speakersAudio);
+    const path = `${__appRoot}/tmp/${meetingId}.wav`;
     for (let [key, value] of speakersAudio) {
-        await audioTrim.splitAudioFileBySpeakers(value, key, createGoogleCloudReadStream(meetingId));
+        await audioTrim.splitAudioFileBySpeakers(value, key, path);
     }
 
     for (let [key, value] of speakersAudio) {
@@ -98,6 +103,7 @@ async function getUntaggedTranscription(meetingId, speakerCount) {
 
 module.exports = {
     getUntaggedTranscription: getUntaggedTranscription,
-    createGoogleCloudWriteStream: createGoogleCloudWriteStream
+    createGoogleCloudWriteStream: createGoogleCloudWriteStream,
+    downloadFileFromGoogleCloud: downloadFileFromGoogleCloud
 };
 

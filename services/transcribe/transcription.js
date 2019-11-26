@@ -1,5 +1,5 @@
 const { getDatabase } = require('../database');
-const { getUntaggedTranscription } = require('../transcribe/google-speaker-diarization');
+const { getUntaggedTranscription, downloadFileFromGoogleCloud } = require('../transcribe/google-speaker-diarization');
 const { tagTranscription } = require('../ms-speaker-registration');
 const { clearWavFile } = require('./clear-temporary-files');
 const { sendTranscriptionToManager } = require('../outlook/meeting');
@@ -24,6 +24,7 @@ async function startTranscription(meetingId) {
     const meeting = await db.collection('meetings').findOne({meetingId: meetingId});
     const speakerCount = meeting.participants.length - 1; // account for parrot itself
     const profileIds = await getProfileIds(meeting);
+    await downloadFileFromGoogleCloud(meetingId, `${__appRoot}/tmp/${meetingId}.wav`);
     const untaggedTranscription = await getUntaggedTranscription(meetingId, speakerCount);
     await tagTranscription(meetingId, profileIds, untaggedTranscription);
     await sendTranscriptionToManager(meetingId);

@@ -121,7 +121,8 @@ async function tagTranscription(meetingId, profileIds, transcription) {
                             }
                         });
                     } catch (err) {
-                        console.log(`Fail to get who is speaking: ${err}`);
+                        console.log('Fail to get who is speaking:');
+                        console.log(err.response.data);
                     }
                 })
             );
