@@ -6,7 +6,11 @@ const logger = require('morgan');
 const cors = require('cors');
 =======
 const cookieParser = require('cookie-parser');
+<<<<<<< HEAD
 >>>>>>> Refactor create enrollment (#20)
+=======
+require('dotenv').config();
+>>>>>>> Mocha chai test (#23)
 
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');

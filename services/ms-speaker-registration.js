@@ -1,3 +1,4 @@
+require('dotenv').config();
 const AZURE_KEY = process.env["AZURE_COGNITIVE_KEY"];
 const AZURE_ENDPOINT = process.env["AZURE_COGNITIVE_ENDPOINT"];
 
