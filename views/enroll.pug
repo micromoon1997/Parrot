@@ -9,7 +9,7 @@ block content
     div 5. Click the "Stop Recording" button when finished, and wait for enrollment status check.
     div 6. If enrollment status indicates that more audio is required, repeat steps 3 to 5 until enrollment is successful.
     div 7. Click the "Submit" button.
-  div 
+  div(style="padding-top : 10px") 
     div NOTE: 
     div - To ensure optimal voice registration results, this sample voice enrollment should be done in a quiet environment without other voices and limited background noise.
     div - Successful enrollment requires a minimum of 30 seconds of voice audio, not including silence. Repeat steps 3 to 5 until enough audio is accumulated.
@@ -37,8 +37,9 @@ block content
   div(id="recording" hidden) Recording...
 
   div Enrollment status check message:
-  h4(id = "success" hidden) Enrollment successful!
+  h4(id = "success" hidden) Enrollment successful! Click Submit button to finish the process.
   h4(id = "more_audio" hidden) More audio needed, repeat steps 3-5.
+  h4(id = "db_updated" hidden) You have finished the enrollment process. Now you can close the webpage.
 
   script(src="/javascripts/recorder.js")
   script(src="/javascripts/main.js")

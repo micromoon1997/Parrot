@@ -11,12 +11,13 @@ let recordButton = document.getElementById("record");
 recordButton.addEventListener("click", startRecording);
 let stopButton = document.getElementById("stop");
 stopButton.addEventListener("click", stopRecording);
+let submitButton = document.getElementById('submit');
+submitButton.addEventListener("click", submit);
 
 let moreAudio = document.getElementById("more_audio");
 let enrollSuccess = document.getElementById("success");
+let dbUpdated = document.getElementById('db_updated');
 
-let submitButton = document.getElementById('submit');
-submitButton.addEventListener("click", submit);
 let recording = document.getElementById("recording");
 
 function startRecording() {
@@ -69,6 +70,8 @@ function submit() {
             recordButton.disabled = true;
             stopButton.disabled = true;
             submitButton.disabled = true;
+            enrollSuccess.hidden = true;
+            dbUpdated.hidden = false;
         },
         error: function(err){
             console.log("Failed to submit voice registration with error: " + err);
@@ -109,19 +112,18 @@ function registerVoice(blob) {
             if(responseText.processingResult.remainingEnrollmentSpeechTime > 0){
                 moreAudio.hidden = false;
                 enrollSuccess.hidden = true;
+                recordButton.disabled = false;
             } else if (responseText.processingResult.enrollmentStatus === "Enrolled"){
                 moreAudio.hidden = true;
                 enrollSuccess.hidden = false;
                 submitButton.disabled = false;
+                recordButton.disabled = true;
             }
-            recordButton.disabled = false;
         } else if( xhr.readyState === 4 ) {
             moreAudio.hidden = false;
             alert(xhr.responseText);
         }
     };
     xhr.open("POST", '/register');
-    // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-    // xhr.setRequestHeader("Content-Type", "applicaton/json");
     xhr.send(fd);
 }
