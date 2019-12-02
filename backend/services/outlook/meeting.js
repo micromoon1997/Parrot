@@ -33,6 +33,21 @@ async function checkUpcomingMeetings() {
   }
 }
 
+async function getMeetings() {
+  const db = await getDatabase();
+  try {
+    const meetings = await db.collection('meetings').find({}).toArray();
+    for (let meeting of meetings) {
+      const email = meeting.meetingManager.emailAddress.address;
+      const person = await db.collection('people').findOne({email});
+      meeting.meetingManager.emailAddress.name = `${person.firstName} ${person.lastName}`;
+    }
+    return meetings;
+  } catch (e) {
+    console.error('Fail to get meeting from database:' + e);
+  }
+}
+
 async function updateMeeting(meeting) {
   const meetingId = meeting.id;
   const db = await getDatabase();
@@ -157,6 +172,7 @@ async function sendTranscriptionToManager(meetingId) {
 }
 
 module.exports = {
+  getMeetings: getMeetings,
   updateMeeting: updateMeeting,
   checkUpcomingMeetings: checkUpcomingMeetings,
   checkParticipantsEnrollment: checkParticipantsEnrollment,

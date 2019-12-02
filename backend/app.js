@@ -3,7 +3,6 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const emailRouter = require('./routes/email');
@@ -13,9 +12,10 @@ const enrollRouter = require('./routes/enroll');
 const createProfileRouter = require('./routes/create-profile');
 const createEnrollmentRouter = require('./routes/create-enrollment');
 const submitToDatabaseRouter = require('./routes/submit');
+const renderRouter = require('./routes/render');
 
 const app = express();
-global.__appRoot = path.resolve(__dirname);
+global.__appRoot = path.resolve(`${__dirname}/..`);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +35,7 @@ app.use('/enroll', enrollRouter);
 app.use('/create', createProfileRouter);
 app.use('/register', createEnrollmentRouter);
 app.use('/submit', submitToDatabaseRouter);
+app.use('/render', renderRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
