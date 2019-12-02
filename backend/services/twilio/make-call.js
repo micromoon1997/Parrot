@@ -2,7 +2,6 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-// TODO: retrieve webex meeting
 const makeCall = async ({
   meetingId,
   toPhoneNumber,
@@ -10,7 +9,7 @@ const makeCall = async ({
   record,
   dialCode,
 }) => {
-  console.log(dialCode);
+  // console.log(dialCode);
   try {
     const data = await client
       .calls

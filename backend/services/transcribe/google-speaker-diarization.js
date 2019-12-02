@@ -1,4 +1,4 @@
-process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../private-key.json`;
+process.env['GOOGLE_APPLICATION_CREDENTIALS'] = `${__dirname}/../../../private-key.json`;
 
 const audioTrim = require('./audio-trim');
 const bucketName = 'untranscribed';

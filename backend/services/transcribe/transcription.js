@@ -12,7 +12,9 @@ async function getProfileIds(meeting) {
         if (email !== 'wavesbot319@outlook.com') {
             const query = {email: email};
             const person = await db.collection('people').findOne(query);
-            profileIds.push(person.azureSpeakerRecognitionGuid);
+            if (person && person.azureSpeakerRecognitionGuid) {
+                profileIds.push(person.azureSpeakerRecognitionGuid);
+            }
             // TODO handle un-enrolled participants
         }
     }

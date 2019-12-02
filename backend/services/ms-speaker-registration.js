@@ -47,6 +47,7 @@ async function createEnrollment(audioBlob, guid, res) {
     try {
         const response = await axios(options);
         const operationLocation = response.headers['operation-location'];
+        console.log(guid);
         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
             const data = await getOperationStatus(operationLocation);
             if (data.status === 'succeeded') {
@@ -108,6 +109,7 @@ async function tagTranscription(meetingId, profileIds, transcription) {
                         const operationLocation = response.headers['operation-location'];
                         schedule.scheduleJob(operationLocation, '*/5 * * * * *', async () => {
                             const data = await getOperationStatus(operationLocation);
+                            console.log(data);
                             //console.log(data);
                             if (data.status === 'succeeded') {
                                 schedule.scheduledJobs[operationLocation].cancel();
@@ -148,7 +150,7 @@ async function getOperationStatus(location) {
         return response.data;
     } catch (err) {
         console.log("Fail to get operation status.\n");
-        console.log(err);
+        console.log(err.response.data.error);
     }
 }
 
